@@ -1,2 +1,2 @@
 # club-wise
-A Club Management tool
+A Club Management tool!
