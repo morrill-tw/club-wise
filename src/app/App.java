@@ -16,4 +16,5 @@ public interface App {
 
   void addMember(Member member);
 
+  void addEvent(Event event);
 }

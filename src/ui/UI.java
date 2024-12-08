@@ -4,6 +4,7 @@ import java.util.List;
 
 import app.App;
 import app.Club;
+import app.Event;
 import app.Member;
 
 public interface UI {
@@ -21,8 +22,7 @@ public interface UI {
 
   void displayMembers(String clubName, List<Member> members);
 
-  void displayEvents(Club club);
+  void displayEvents(Club club, List<Event> events);
 
   void refreshClubs(List<Club> clubs);
-
 }

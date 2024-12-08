@@ -22,6 +22,8 @@ CREATE TABLE role
     role_name VARCHAR(64) PRIMARY KEY
 );
 
+INSERT INTO role (role_name)
+VALUES ('President'), ('Vice President'), ('Secretary'), ('Treasurer'), ('Member');
 CREATE TABLE member_of_club
 (
     member_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -141,13 +143,11 @@ BEGIN
 SELECT * FROM member_of_club WHERE club_name = club_name_p;
 END $$
 DELIMITER ;
-    
+
 -- For testing
 CALL get_members_by_club_name( "Cheese Club" );
 CALL get_members_by_club_name( "NER" );
 
-INSERT INTO role ( role_name )
-VALUES ( "President" ), ( "Member" );
 
 INSERT INTO member_of_club ( first_name, last_name, club_name, role_name, join_date )
 VALUES ("Bob", "Smith", "NER", "President" , '2023-8-10'),
@@ -324,3 +324,72 @@ END$$
 DELIMITER ;
 
 CALL get_number_of_members('Generate');
+
+-- get events for a specific club
+DELIMITER $$
+CREATE PROCEDURE get_events_by_club(
+    IN p_club_name VARCHAR(64)
+)
+BEGIN
+SELECT
+    event_title,
+    event_description,
+    event_date
+FROM
+    event
+WHERE
+    club_name = p_club_name
+ORDER BY
+    event_date ASC;
+END$$
+DELIMITER ;
+
+call get_events_by_club("Generate");
+
+-- add an event to a club
+
+DELIMITER $$
+
+CREATE PROCEDURE add_event_to_club(
+    IN p_event_title VARCHAR(64),
+    IN p_event_description VARCHAR(500),
+    IN p_event_date DATE,
+    IN p_club_name VARCHAR(64)
+)
+BEGIN
+    DECLARE v_club_exists INT;
+    DECLARE v_event_exists INT;
+    DECLARE v_message VARCHAR(255);
+
+    -- Check if the club exists
+SELECT COUNT(*) INTO v_club_exists
+FROM club
+WHERE club_name = p_club_name;
+
+-- Check if the event already exists for the given club and date
+SELECT COUNT(*) INTO v_event_exists
+FROM event
+WHERE event_title = p_event_title
+  AND event_date = p_event_date
+  AND club_name = p_club_name;
+
+-- If the club exists and event doesn't exist, insert the event
+IF v_club_exists > 0 AND v_event_exists = 0 THEN
+        INSERT INTO event (event_title, event_description, event_date, club_name)
+        VALUES (p_event_title, p_event_description, p_event_date, p_club_name);
+        SET v_message = 'Event added successfully.';
+    ELSEIF v_club_exists = 0 THEN
+        SET v_message = 'Club does not exist.';
+ELSE
+        SET v_message = 'Event already exists for this club on the given date.';
+END IF;
+
+    -- Output the message
+SELECT v_message AS ResultMessage;
+END$$
+
+DELIMITER ;
+
+CALL add_event_to_club('Hackathon', 'Coding competition for developers', '2024-01-15', 'Generate');
+
+

@@ -3,17 +3,17 @@ package ui;
 import java.awt.*;
 import javax.swing.*;
 import app.App;
+import app.Event;
 import app.Member;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Month;
 
-public class AddMemberForm extends JDialog {
+public class AddEventForm extends JDialog {
   private App observer;
-  private JTextField firstNameField;
-  private JTextField lastNameField;
-  private JTextField roleField;
+  private JTextField eventName;
+  private JTextField eventDescription;
   private JComboBox<String> monthComboBox;
   private JComboBox<Integer> dayComboBox;
   private JComboBox<Integer> yearComboBox;
@@ -21,8 +21,8 @@ public class AddMemberForm extends JDialog {
   private JButton cancelButton;
   private String clubName;
 
-  public AddMemberForm(JFrame parent, App observer) {
-    super(parent, "Add Member", true);
+  public AddEventForm(JFrame parent, App observer) {
+    super(parent, "Add Event", true);
 
     setSize(350, 280);
 
@@ -35,9 +35,8 @@ public class AddMemberForm extends JDialog {
     // Set the layout and initialize components
     setLayout(new FlowLayout());
 
-    firstNameField = new JTextField(23);
-    lastNameField = new JTextField(23);
-    roleField = new JTextField(25);
+    eventName = new JTextField(23);
+    eventDescription = new JTextField(25);
     submitButton = new JButton("Submit");
     cancelButton = new JButton("Cancel");
 
@@ -57,13 +56,11 @@ public class AddMemberForm extends JDialog {
     dayComboBox = new JComboBox<>();
 
     // Add components to the form
-    add(new JLabel("First Name:"));
-    add(firstNameField);
-    add(new JLabel("Last Name:"));
-    add(lastNameField);
-    add(new JLabel("Role:"));
-    add(roleField);
-    add(new JLabel("Date Joined:                                                                      "));
+    add(new JLabel("Event Name:"));
+    add(eventName);
+    add(new JLabel("Event Description:"));
+    add(eventDescription);
+    add(new JLabel("Date of Event:                                                                 "));
     add(new JLabel("Month:"));
     add(monthComboBox);
     add(new JLabel("Day:"));
@@ -103,16 +100,15 @@ public class AddMemberForm extends JDialog {
 
   private void submitForm() {
     // Extract the information from the form
-    String firstName = firstNameField.getText();
-    String lastName = lastNameField.getText();
-    String role = roleField.getText();
+    String firstName = eventName.getText();
+    String eventDescriptionText = eventDescription.getText();
     int monthIndex = monthComboBox.getSelectedIndex();
     int day = (int) dayComboBox.getSelectedItem();
     int year = (int) yearComboBox.getSelectedItem();
 
     // Process the data, like adding the member to a list or database
-    observer.addMember(new Member(-1, firstName, lastName, new Date(day, monthIndex, year),
-            role, this.clubName));
+    observer.addEvent(new Event(firstName, eventDescriptionText, new Date(day, monthIndex, year),
+            this.clubName));
 
     // Close the dialog after submission
     dispose();
