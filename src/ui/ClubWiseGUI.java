@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import app.ActiveFilter;
 import app.App;
+import app.CategoryFilter;
 import app.Club;
 import app.EmptyFilter;
 import app.Event;
@@ -74,11 +75,14 @@ public class ClubWiseGUI extends JFrame implements UI {
     JLabel filterLabel = new JLabel("Filters:");
     filterLabel.setFont(new Font("Arial", Font.BOLD, 16));
     filterLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    filterLabel.setOpaque(true);
+    filterLabel.setBackground(new Color(200, 200, 215)); // Match the filter panel background
     filterPanel.add(filterLabel);
 
     JCheckBox activeFilter = new JCheckBox("Active Clubs Only");
     activeFilter.setFont(new Font("Arial", Font.PLAIN, 14));
     activeFilter.setAlignmentX(Component.LEFT_ALIGNMENT);
+    activeFilter.setOpaque(false); // Transparent background to blend with panel
     filterPanel.add(activeFilter);
 
     activeFilter.addItemListener(e -> {
@@ -89,18 +93,42 @@ public class ClubWiseGUI extends JFrame implements UI {
       }
     });
 
-    JCheckBox categoryFilter = new JCheckBox("Filter by Category");
-    categoryFilter.setFont(new Font("Arial", Font.PLAIN, 14));
-    categoryFilter.setAlignmentX(Component.LEFT_ALIGNMENT);
-    filterPanel.add(categoryFilter);
+    // Add a text field and submit button for category filter
+    JLabel categoryLabel = new JLabel("Category:");
+    categoryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+    categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    categoryLabel.setOpaque(true);
+    categoryLabel.setBackground(new Color(200, 200, 215)); // Match the filter panel background
+    filterPanel.add(categoryLabel);
 
-    JButton applyFiltersButton = new JButton("Apply Filters");
-    applyFiltersButton.setFont(new Font("Arial", Font.PLAIN, 14));
-    applyFiltersButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    filterPanel.add(Box.createVerticalStrut(10)); // Add spacing
-    filterPanel.add(applyFiltersButton);
+    JPanel categoryPanel = new JPanel();
+    categoryPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Align components to the left
+    categoryPanel.setMaximumSize(new Dimension(200, 30)); // Constrain the size of the panel
+    categoryPanel.setBackground(new Color(200, 200, 215)); // Match the filter panel background
 
-    JScrollPane scrollPane  = createClubsPanel(clubs);
+    JTextField categoryTextField = new JTextField();
+    categoryTextField.setPreferredSize(new Dimension(120, 25)); // Set a fixed size for the text field
+    categoryTextField.setBackground(new Color(255, 255, 255)); // White background for text box
+    categoryTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
+    JButton categorySubmitButton = new JButton("Submit");
+    categorySubmitButton.setFont(new Font("Arial", Font.PLAIN, 12));
+    categorySubmitButton.setPreferredSize(new Dimension(70, 25)); // Match the height of the text box
+
+    categorySubmitButton.addActionListener(e -> {
+      String category = categoryTextField.getText().trim();
+      if (!category.isEmpty()) {
+        observer.filterClubs(new CategoryFilter(category));
+      } else {
+        observer.filterClubs(new EmptyFilter());
+      }
+    });
+
+    categoryPanel.add(categoryTextField);
+    categoryPanel.add(categorySubmitButton);
+    filterPanel.add(categoryPanel);
+
+    JScrollPane scrollPane = createClubsPanel(clubs);
 
     // Combine filter panel and scroll pane into a JSplitPane
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filterPanel, scrollPane);
@@ -291,7 +319,7 @@ public class ClubWiseGUI extends JFrame implements UI {
 
     backButtonPanel.add(backButton);
 
-    JLabel clubLabel = new JLabel(clubName);
+    JLabel clubLabel = new JLabel(clubName + " - Members");
     clubLabel.setFont(new Font("Arial", Font.BOLD, 18));
     clubLabel.setForeground(Color.WHITE);
     clubLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
@@ -395,7 +423,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(roleLabel);
 
-    JLabel joinDateLabel = new JLabel("Joined: " + event.getEventDate());
+    JLabel joinDateLabel = new JLabel("Date: " + event.getEventDate());
     joinDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
     joinDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -425,7 +453,7 @@ public class ClubWiseGUI extends JFrame implements UI {
   }
 
   @Override
-  public void displayEvents(Club club, List<Event> eventList) {
+  public void displayEvents(String clubName, List<Event> eventList) {
     // Clear existing components
     cards.removeAll();
     // Create a container panel using GridBagLayout
@@ -454,7 +482,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     ));
     addEventButton.addActionListener(e -> {
       AddEventForm addEventForm = new AddEventForm(this, observer);
-      addEventForm.setClub(club.getName());
+      addEventForm.setClub(clubName);
       addEventForm.setVisible(true);
     });
 
@@ -517,7 +545,7 @@ public class ClubWiseGUI extends JFrame implements UI {
 
     backButtonPanel.add(backButton);
 
-    JLabel clubLabel = new JLabel(club.getName());
+    JLabel clubLabel = new JLabel(clubName + " - Events");
     clubLabel.setFont(new Font("Arial", Font.BOLD, 18));
     clubLabel.setForeground(Color.WHITE);
     clubLabel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));

@@ -39,7 +39,7 @@ public class ClubWiseApp implements App {
   }
 
   public void openEventsPage(Club club) {
-    ui.displayEvents(club, getEvents(club.getName()));
+    ui.displayEvents(club.getName(), getEvents(club.getName()));
   }
 
   private List<Event> getEvents(String clubName) {
@@ -119,22 +119,24 @@ public class ClubWiseApp implements App {
     Date eventDate = event.getEventDate();
     String clubName = event.getClubName();
 
-    // Create a CallableStatement to call the stored procedure
-    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
-      callableStatement.setString(1, eventTitle);
-      callableStatement.setString(2, eventDescription);
-      callableStatement.setDate(3, eventDate);
-      callableStatement.setString(4, clubName);
+      // Create a CallableStatement to call the stored procedure
+      try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+        // Set input parameters for the procedure
+        callableStatement.setString(1, eventTitle);
+        callableStatement.setString(2, eventDescription);
+        callableStatement.setDate(3, eventDate);
+        callableStatement.setString(4, clubName);
 
-      // Execute the stored procedure
-      try (ResultSet resultSet = callableStatement.executeQuery()) {
-        // Process the result (the result message from the procedure)
-        if (resultSet.next()) {
-          String resultMessage = resultSet.getString("ResultMessage");
-          System.out.println("Procedure Result: " + resultMessage);
+        // Execute the stored procedure
+        try (ResultSet resultSet = callableStatement.executeQuery()) {
+          // Process the result (the result message from the procedure)
+          if (resultSet.next()) {
+            String resultMessage = resultSet.getString("ResultMessage");
+            System.out.println("Procedure Result: " + resultMessage);
+          }
+
         }
-      }
+        ui.displayEvents(clubName, getEvents(clubName));
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
     }
