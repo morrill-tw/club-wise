@@ -375,15 +375,33 @@ public class ClubWiseGUI extends JFrame implements UI {
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(joinDateLabel);
 
+    JButton trashButton = new JButton("Delete Member");
+    trashButton.setPreferredSize(new Dimension(40, 40));
+    trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    trashButton.addActionListener(e -> {
+      int confirm = JOptionPane.showConfirmDialog(memberCard,
+              "Are you sure you want to delete this member?",
+              "Confirm Deletion",
+              JOptionPane.YES_NO_OPTION);
+      if (confirm == JOptionPane.YES_OPTION) {
+        observer.deleteMember(member);
+        JOptionPane.showMessageDialog(memberCard, "Member deleted: " + member.getFirstName() + " " + member.getLastName());
+      }
+    });
+    infoPanel.add(trashButton);
+
     memberCard.add(infoPanel, BorderLayout.CENTER);
     return memberCard;
   }
 
   private JPanel createEventCard(Event event) {
-    JPanel memberCard = new JPanel();
-    memberCard.setLayout(new BorderLayout());
-    memberCard.setPreferredSize(new Dimension(300, 300)); // Fixed size for each card
-    memberCard.setBorder(BorderFactory.createCompoundBorder(
+    JPanel eventCard = new JPanel();
+    eventCard.setLayout(new BorderLayout());
+    eventCard.setPreferredSize(new Dimension(300, 300)); // Fixed size for each card
+    eventCard.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(150, 150, 255), 3),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
     ));
@@ -411,8 +429,27 @@ public class ClubWiseGUI extends JFrame implements UI {
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(joinDateLabel);
 
-    memberCard.add(infoPanel, BorderLayout.CENTER);
-    return memberCard;
+    JButton trashButton = new JButton("Delete Event");
+    trashButton.setPreferredSize(new Dimension(40, 40));
+    trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    trashButton.addActionListener(e -> {
+      int confirm = JOptionPane.showConfirmDialog(eventCard,
+              "Are you sure you want to delete this event?",
+              "Confirm Deletion",
+              JOptionPane.YES_NO_OPTION);
+      if (confirm == JOptionPane.YES_OPTION) {
+        observer.deleteEvent(event);
+        JOptionPane.showMessageDialog(eventCard, "Event deleted: " + event.getEventTitle());
+      }
+    });
+
+    infoPanel.add(trashButton);
+
+    eventCard.add(infoPanel, BorderLayout.CENTER);
+    return eventCard;
   }
 
   @Override
