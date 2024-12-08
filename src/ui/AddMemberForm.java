@@ -19,6 +19,7 @@ public class AddMemberForm extends JDialog {
   private JComboBox<Integer> yearComboBox;
   private JButton submitButton;
   private JButton cancelButton;
+  private String clubName;
 
   public AddMemberForm(JFrame parent, App observer) {
     super(parent, "Add Member", true);
@@ -110,7 +111,8 @@ public class AddMemberForm extends JDialog {
     int year = (int) yearComboBox.getSelectedItem();
 
     // Process the data, like adding the member to a list or database
-    observer.addMember(new Member(-1, firstName, lastName, new Date(day, monthIndex, year), role));
+    observer.addMember(new Member(-1, firstName, lastName, new Date(day, monthIndex, year),
+            role, clubName));
 
     // Close the dialog after submission
     dispose();
@@ -119,5 +121,9 @@ public class AddMemberForm extends JDialog {
   private void cancelForm() {
     // Close the dialog without doing anything
     dispose();
+  }
+
+  public void setClub(String clubName) {
+    this.clubName = clubName;
   }
 }

@@ -179,6 +179,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     buttonPanel.setOpaque(false);
 
     JButton membersButton = new JButton("View Members");
+
     membersButton.addActionListener(e -> {
       observer.openMembersPage(club);
     });
@@ -224,9 +225,9 @@ public class ClubWiseGUI extends JFrame implements UI {
             BorderFactory.createLineBorder(new Color(150, 150, 255), 3),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
     ));
-
     addMemberButton.addActionListener(e -> {
       AddMemberForm addMemberForm = new AddMemberForm(this, observer);
+      addMemberForm.setClub(clubName);
       addMemberForm.setVisible(true);
     });
 
