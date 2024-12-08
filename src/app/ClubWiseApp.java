@@ -298,7 +298,7 @@ public class ClubWiseApp implements App {
           String resultMessage = rs.getString(1);  // Get the message returned by the procedure
         }
       }
-      ui.displayMembers(member.getClubName(), this.getMembers(member.getClubName()));
+      ui.displayClubs(getClubs());
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();

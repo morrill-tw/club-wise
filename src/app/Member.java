@@ -3,7 +3,7 @@ package app;
 import java.sql.Date;
 
 public class Member {
-  private final String clubName;
+  private String clubName;
   private int id;
   private String firstName;
   private String lastName;

@@ -405,7 +405,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     editButton.addActionListener(e -> {
       EditMemberForm memberForm = new EditMemberForm(this, observer, member.getId(), member.getRoleName());
       memberForm.setVisible(true);
-      memberForm.setClub(clubName);
+      memberForm.setClub(member.getClubName());
     });
     infoPanel.add(editButton);
 
@@ -467,14 +467,14 @@ public class ClubWiseGUI extends JFrame implements UI {
     infoPanel.add(trashButton);
 
 
-    JButton editButton = new JButton("Edit Member");
+    JButton editButton = new JButton("Edit Event");
     editButton.setPreferredSize(new Dimension(40, 40));
     editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
 
     editButton.addActionListener(e -> {
-      EditEventForm editForm = new EditEventForm(this, observer);
+      EditEventForm editForm = new EditEventForm(this, observer, event.getClubName(), event.getEventDate(), event.getEventTitle());
       editForm.setVisible(true);
       editForm.setClub(clubName);
     });

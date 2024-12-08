@@ -97,6 +97,7 @@ public class EditMemberForm extends JDialog {
     Date sqlDate = Date.valueOf(localDate); // Convert LocalDate to java.sql.Date
 
     observer.editMember(new Member(id, firstName, lastName, sqlDate, role, this.clubName), this.clubName);
+
     dispose();
   }
 

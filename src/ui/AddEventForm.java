@@ -112,7 +112,7 @@ public class AddEventForm extends JDialog {
     Date sqlDate = Date.valueOf(eventDate);
 
     // Process the data, like adding the event to a list or database
-    observer.addEvent(new Event(eventNameText, eventDescriptionText, sqlDate, this.clubName));
+    observer.addEvent(new Event(eventNameText, eventDescriptionText, sqlDate, clubName));
 
     // Close the dialog after submission
     dispose();
