@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -118,22 +119,22 @@ public class ClubWiseApp implements App {
     Date eventDate = event.getEventDate();
     String clubName = event.getClubName();
 
-      // Create a CallableStatement to call the stored procedure
-      try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-        // Set input parameters for the procedure
-        callableStatement.setString(1, eventTitle);
-        callableStatement.setString(2, eventDescription);
-        callableStatement.setDate(3, eventDate);
-        callableStatement.setString(4, clubName);
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, eventTitle);
+      callableStatement.setString(2, eventDescription);
+      callableStatement.setDate(3, eventDate);
+      callableStatement.setString(4, clubName);
 
-        // Execute the stored procedure
-        try (ResultSet resultSet = callableStatement.executeQuery()) {
-          // Process the result (the result message from the procedure)
-          if (resultSet.next()) {
-            String resultMessage = resultSet.getString("ResultMessage");
-            System.out.println("Procedure Result: " + resultMessage);
-          }
+      // Execute the stored procedure
+      try (ResultSet resultSet = callableStatement.executeQuery()) {
+        // Process the result (the result message from the procedure)
+        if (resultSet.next()) {
+          String resultMessage = resultSet.getString("ResultMessage");
+          System.out.println("Procedure Result: " + resultMessage);
         }
+      }
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
     }
@@ -219,5 +220,26 @@ public class ClubWiseApp implements App {
       System.out.println("Error fetching members.");
     }
     return members;
+  }
+
+  public void deleteEvent(Event event) {
+    try {
+      // SQL to call the stored procedure
+      String sql = "{CALL delete_events_from_club(?, ?, ?)}";
+
+      // Prepare the callable statement
+      CallableStatement stmt = conn.prepareCall(sql);
+      stmt.setString(1, event.getClubName());   // Set the club name
+      stmt.setString(2, event.getEventTitle()); // Set the event title
+      stmt.setDate(3, event.getEventDate());    // Set the event date
+
+      // Execute the procedure
+      boolean hasResultSet = stmt.execute();
+
+    } catch (SQLException e) {
+      // Handle any SQL exceptions
+      e.printStackTrace();
+      System.out.print("Error occurred while deleting events: " + e.getMessage());
+    }
   }
 }
