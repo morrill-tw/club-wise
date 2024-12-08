@@ -235,11 +235,39 @@ public class ClubWiseApp implements App {
 
       // Execute the procedure
       boolean hasResultSet = stmt.execute();
-
+      ui.displayClubs(this.getClubs());
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();
       System.out.print("Error occurred while deleting events: " + e.getMessage());
     }
+  }
+
+  public void deleteMember(Member member) {
+    int memberId = member.getId();
+    try {
+    // SQL to call the stored procedure
+    String sql = "{CALL remove_member_from_club(?)}";
+
+    // Prepare the callable statement
+    CallableStatement stmt = conn.prepareCall(sql);
+    stmt.setInt(1, memberId);  // Set the member ID
+
+    // Execute the procedure
+    boolean hasResultSet = stmt.execute();
+
+    // Process the result (Message from the procedure)
+    if (hasResultSet) {
+      ResultSet rs = stmt.getResultSet();
+      while (rs.next()) {
+        String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+      }
+    }
+      ui.displayClubs(this.getClubs());
+  } catch (SQLException e) {
+    // Handle any SQL exceptions
+    e.printStackTrace();
+    System.out.print("Error occurred while removing member: " + e.getMessage());
+  }
   }
 }

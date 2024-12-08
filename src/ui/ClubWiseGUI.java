@@ -347,6 +347,24 @@ public class ClubWiseGUI extends JFrame implements UI {
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(joinDateLabel);
 
+    JButton trashButton = new JButton("Delete Member");
+    trashButton.setPreferredSize(new Dimension(40, 40));
+    trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    trashButton.addActionListener(e -> {
+      int confirm = JOptionPane.showConfirmDialog(memberCard,
+              "Are you sure you want to delete this member?",
+              "Confirm Deletion",
+              JOptionPane.YES_NO_OPTION);
+      if (confirm == JOptionPane.YES_OPTION) {
+        observer.deleteMember(member);
+        JOptionPane.showMessageDialog(memberCard, "Member deleted: " + member.getFirstName() + " " + member.getLastName());
+      }
+    });
+    infoPanel.add(trashButton);
+
     memberCard.add(infoPanel, BorderLayout.CENTER);
     return memberCard;
   }
