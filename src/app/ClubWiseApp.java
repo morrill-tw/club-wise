@@ -102,6 +102,7 @@ public class ClubWiseApp implements App {
         }
       } else {
         System.out.println("Member added successfully.");
+        ui.displayMembers(clubName, getMembers(clubName));
       }
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
