@@ -21,4 +21,8 @@ public interface App {
   void deleteEvent(Event event);
 
   void deleteMember(Member member);
+
+  void editMember(Member member);
+
+  void editEvent(Event event);
 }

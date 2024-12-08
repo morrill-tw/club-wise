@@ -395,6 +395,19 @@ public class ClubWiseGUI extends JFrame implements UI {
     });
     infoPanel.add(trashButton);
 
+
+    JButton editButton = new JButton("Edit Member");
+    editButton.setPreferredSize(new Dimension(40, 40));
+    editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    editButton.addActionListener(e -> {
+      EditMemberForm memberForm = new EditMemberForm(this, observer, member.getId(), member.getRoleName());
+      memberForm.setVisible(true);
+    });
+    infoPanel.add(editButton);
+
     memberCard.add(infoPanel, BorderLayout.CENTER);
     return memberCard;
   }
@@ -450,8 +463,23 @@ public class ClubWiseGUI extends JFrame implements UI {
         JOptionPane.showMessageDialog(eventCard, "Event deleted: " + event.getEventTitle());
       }
     });
-
     infoPanel.add(trashButton);
+
+
+    JButton editButton = new JButton("Edit Member");
+    editButton.setPreferredSize(new Dimension(40, 40));
+    editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    editButton.addActionListener(e -> {
+      EditEventForm editForm = new EditEventForm(this, observer);
+      editForm.setVisible(true);
+      editForm.setClub(event.getClubName());
+    });
+    infoPanel.add(editButton);
+
+
 
     eventCard.add(infoPanel, BorderLayout.CENTER);
     return eventCard;

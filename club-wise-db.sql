@@ -219,22 +219,33 @@ CALL remove_member_from_club(123);
 
 -- Create procedure to edit a member's role
 DELIMITER $$
-CREATE PROCEDURE edit_member_role(
+
+CREATE PROCEDURE edit_member_info(
     IN p_member_id INT,
-    IN p_new_role_name VARCHAR(64)
+    IN p_first_name VARCHAR(64),
+    IN p_last_name VARCHAR(64),
+    IN p_join_date DATE
 )
 BEGIN
-    IF EXISTS (SELECT 1 FROM member_of_club WHERE member_id = p_member_id) THEN
-UPDATE member_of_club
-SET role_name = p_new_role_name
+    DECLARE v_member_exists INT;
+
+SELECT COUNT(*) INTO v_member_exists
+FROM member_of_club
 WHERE member_id = p_member_id;
 
+IF v_member_exists > 0 THEN
+UPDATE member_of_club
+SET first_name = p_first_name,
+    last_name = p_last_name,
+    join_date = p_join_date
+WHERE member_id = p_member_id;
+
+SELECT CONCAT('Member with ID ', p_member_id, ' has been updated successfully.') AS Message;
 ELSE
 SELECT CONCAT('Member with ID ', p_member_id, ' does not exist in the database.') AS ErrorMessage;
 END IF;
 END$$
 DELIMITER ;
-
 -- use a real Id though 123 is a placeholder, but works!
 -- CALL edit_member_role(123, 'Treasurer');
 
