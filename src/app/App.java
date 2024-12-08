@@ -22,7 +22,7 @@ public interface App {
 
   void deleteMember(Member member);
 
-  void editMember(Member member);
+  void editMember(Member member, String clubName);
 
   void editEvent(Event event);
 }

@@ -273,7 +273,7 @@ public class ClubWiseApp implements App {
     }
   }
 
-  public void editMember(Member member) {
+  public void editMember(Member member, String clubName) {
     try {
       // SQL to call the stored procedure
       String sql = "{CALL edit_member_info(?, ?, ?, ?)}";
@@ -298,6 +298,7 @@ public class ClubWiseApp implements App {
           String resultMessage = rs.getString(1);  // Get the message returned by the procedure
         }
       }
+      ui.displayMembers(member.getClubName(), this.getMembers(member.getClubName()));
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();
@@ -333,6 +334,7 @@ public class ClubWiseApp implements App {
       } else {
         System.out.println("Event updated successfully.");
       }
+      ui.displayEvents(clubName, this.getEvents(clubName));
     } catch (SQLException e) {
       e.printStackTrace(); // Print SQL exception details
     }
