@@ -377,7 +377,9 @@ public class ClubWiseGUI extends JFrame implements UI {
 
     JButton trashButton = new JButton("Delete Member");
     trashButton.setPreferredSize(new Dimension(40, 40));
-    trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    trashButton.setBackground(new Color(255, 130, 130));
+    trashButton.setForeground(Color.WHITE);
+    trashButton.setAlignmentY(BOTTOM_ALIGNMENT);
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
 
@@ -432,6 +434,9 @@ public class ClubWiseGUI extends JFrame implements UI {
     JButton trashButton = new JButton("Delete Event");
     trashButton.setPreferredSize(new Dimension(40, 40));
     trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    trashButton.setBackground(new Color(255, 130, 130));
+    trashButton.setForeground(Color.WHITE);
+    trashButton.setAlignmentY(BOTTOM_ALIGNMENT);
     nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
 
