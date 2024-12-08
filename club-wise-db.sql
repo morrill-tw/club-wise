@@ -162,7 +162,7 @@ VALUES ( "Jill", "Brown", "NER", "Member" , '2023-8-10'),
 -- Create procedure to add a member to the database
 DELIMITER $$
 
-CREATE PROCEDURE AddMemberToClub(
+CREATE PROCEDURE add_member_to_club(
     IN p_first_name VARCHAR(64),
     IN p_last_name VARCHAR(64),
     IN p_join_date DATE,
@@ -183,12 +183,9 @@ END$$
 DELIMITER ;
 
 
--- Again use a real ID number, 123 is just a placeholder
-CALL RemoveMemberFromClub(123);
-
 -- Create procedure to remove a member from the database
 DELIMITER $$
-CREATE PROCEDURE RemoveMemberFromClub(
+CREATE PROCEDURE remove_member_from_club(
     IN p_member_id INT
 )
 BEGIN
@@ -202,9 +199,12 @@ END IF;
 END$$
 DELIMITER ;
 
+-- Again use a real ID number, 123 is just a placeholder
+CALL remove_member_from_club(123);
+
 -- Create procedure to edit a member's role
 DELIMITER $$
-CREATE PROCEDURE EditMemberRole(
+CREATE PROCEDURE edit_member_role(
     IN p_member_id INT,
     IN p_new_role_name VARCHAR(64)
 )
@@ -221,11 +221,11 @@ END$$
 DELIMITER ;
 
 -- use a real Id though 123 is a placeholder, but works!
--- CALL EditMemberRole(123, 'Treasurer');
+-- CALL edit_member_role(123, 'Treasurer');
 
 -- Create procedure to edit an event in the database
 DELIMITER $$
-CREATE PROCEDURE EditEvent(
+CREATE PROCEDURE edit_event(
     IN p_event_title VARCHAR(64),
     IN p_event_date DATE,
     IN p_club_name VARCHAR(64),
@@ -252,7 +252,7 @@ END IF;
 END$$
 DELIMITER ;
 
-CALL EditEvent(
+CALL edit_event(
     'Tech Talk',
     '2024-12-15',
     'Generate',
@@ -261,7 +261,7 @@ CALL EditEvent(
 
 -- Create procedure to remove an event from the database
 DELIMITER $$
-CREATE PROCEDURE RemoveEvent(
+CREATE PROCEDURE remove_event(
     IN p_event_title VARCHAR(64),
     IN p_event_date DATE,
     IN p_club_name VARCHAR(64)
@@ -284,12 +284,12 @@ END IF;
 END$$
 DELIMITER ;
 
-CALL RemoveEvent('Tech Talk', '2024-12-15', 'Generate');
+CALL remove_event('Tech Talk', '2024-12-15', 'Generate');
 
 -- Create procedure to add an event to the database
 
 DELIMITER $$
-CREATE PROCEDURE AddEvent(
+CREATE PROCEDURE add_event(
     IN p_event_title VARCHAR(64),
     IN p_event_description VARCHAR(500),
     IN p_event_date DATE,
@@ -309,19 +309,18 @@ END IF;
 END$$
 DELIMITER ;
 
-CALL AddEvent('Tech Talk', 'An informative event about emerging technologies.', '2024-12-15', 'Generate');
+CALL add_event('Tech Talk', 'An informative event about emerging technologies.', '2024-12-15', 'Generate');
 
 -- Create procedure for determining the number of members in a club
 DELIMITER $$
-CREATE PROCEDURE GetNumberOfMembersInClub(
+CREATE PROCEDURE get_number_of_members(
     IN p_club_name VARCHAR(64)
 )
 BEGIN
-    -- Count the number of members in the specified club
 SELECT COUNT(*) AS NumberOfMembers
 FROM member_of_club
 WHERE club_name = p_club_name;
 END$$
 DELIMITER ;
 
-CALL GetNumberOfMembersInClub('Generate');
+CALL get_number_of_members('Generate');
