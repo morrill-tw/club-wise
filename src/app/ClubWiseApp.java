@@ -237,7 +237,7 @@ public class ClubWiseApp implements App {
 
       // Execute the procedure
       boolean hasResultSet = stmt.execute();
-      ui.displayClubs(this.getClubs());
+      ui.displayEvents(event.getClubName(), getEvents(event.getClubName()));
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();
@@ -265,7 +265,7 @@ public class ClubWiseApp implements App {
         String resultMessage = rs.getString(1);  // Get the message returned by the procedure
       }
     }
-      ui.displayClubs(this.getClubs());
+      ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
   } catch (SQLException e) {
     // Handle any SQL exceptions
     e.printStackTrace();
