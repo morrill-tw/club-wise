@@ -161,7 +161,6 @@ VALUES ( "Jill", "Brown", "NER", "Member" , '2023-8-10'),
 
 -- Create procedure to add a member to the database
 DELIMITER $$
-
 CREATE PROCEDURE add_member_to_club(
     IN p_first_name VARCHAR(64),
     IN p_last_name VARCHAR(64),
@@ -170,14 +169,30 @@ CREATE PROCEDURE add_member_to_club(
     IN p_role_name VARCHAR(64)
 )
 BEGIN
-    IF EXISTS (SELECT 1 FROM club WHERE club_name = p_club_name) AND
-       EXISTS (SELECT 1 FROM role WHERE role_name = p_role_name) THEN
+    DECLARE v_club_exists INT;
+    DECLARE v_role_exists INT;
 
-       INSERT INTO member_of_club (first_name, last_name, join_date, club_name, role_name)
-       VALUES (p_first_name, p_last_name, p_join_date, p_club_name, p_role_name);
+    -- Check if the club exists
+SELECT COUNT(*) INTO v_club_exists
+FROM club
+WHERE club_name = p_club_name;
 
+-- Check if the role exists
+SELECT COUNT(*) INTO v_role_exists
+FROM role
+WHERE role_name = p_role_name;
+
+-- If the club exists
+IF v_club_exists > 0 THEN
+        -- If the role doesn't exist, insert it into the role table
+        IF v_role_exists = 0 THEN
+            INSERT INTO role (role_name)
+            VALUES (p_role_name);
+END IF;
+INSERT INTO member_of_club (first_name, last_name, join_date, club_name, role_name)
+VALUES (p_first_name, p_last_name, p_join_date, p_club_name, p_role_name);
 ELSE
-SELECT 'Failed to add member: Club or Role does not exist.' AS ErrorMessage;
+SELECT 'Failed to add member: Club does not exist.' AS ErrorMessage;
 END IF;
 END$$
 DELIMITER ;
@@ -197,7 +212,7 @@ ELSE
 SELECT CONCAT('Member with ID ', p_member_id, ' does not exist in the database.') AS ErrorMessage;
 END IF;
 END$$
-DELIMITER ;
+DELIMITER;
 
 -- Again use a real ID number, 123 is just a placeholder
 CALL remove_member_from_club(123);
@@ -392,4 +407,36 @@ DELIMITER ;
 
 CALL add_event_to_club('Hackathon', 'Coding competition for developers', '2024-01-15', 'Generate');
 
+-- create procedure to delete Events from a specific club
+DELIMITER $$
+
+CREATE PROCEDURE delete_events_from_club(
+    IN p_club_name VARCHAR(64),
+    IN p_event_title VARCHAR(64),
+    IN p_event_date DATE
+)
+BEGIN
+    DECLARE v_club_exists INT;
+
+    -- Check if the club exists
+SELECT COUNT(*) INTO v_club_exists
+FROM club
+WHERE club_name = p_club_name;
+
+-- If the club exists
+IF v_club_exists > 0 THEN
+        -- If both event title and event date are provided, delete the specific event
+DELETE FROM event
+WHERE club_name = p_club_name
+  AND event_title = p_event_title
+  AND event_date = p_event_date;
+
+SELECT 'Event(s) deleted successfully.' AS ResultMessage;
+
+ELSE
+        -- If the club does not exist, return an error message
+SELECT 'Failed to delete events: Club does not exist.' AS ErrorMessage;
+END IF;
+END$$
+DELIMITER ;
 
