@@ -38,7 +38,7 @@ public class ClubWiseApp implements App {
   }
 
   public void openEventsPage(Club club) {
-    ui.displayEvents(club, getEvents(club.getName()));
+    ui.displayEvents(club.getName(), getEvents(club.getName()));
   }
 
   private List<Event> getEvents(String clubName) {
@@ -133,7 +133,9 @@ public class ClubWiseApp implements App {
             String resultMessage = resultSet.getString("ResultMessage");
             System.out.println("Procedure Result: " + resultMessage);
           }
+
         }
+        ui.displayEvents(clubName, getEvents(clubName));
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
     }

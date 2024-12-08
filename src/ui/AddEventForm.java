@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 import app.App;
 import app.Event;
-import app.Member;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -84,11 +83,11 @@ public class AddEventForm extends JDialog {
   }
 
   private void updateDays() {
-    int monthIndex = monthComboBox.getSelectedIndex();
+    int monthIndex = monthComboBox.getSelectedIndex(); // Zero-based index
     int year = (int) yearComboBox.getSelectedItem();
 
     // Get the number of days in the selected month
-    Month month = Month.of(monthIndex + 1);
+    Month month = Month.of(monthIndex + 1); // Convert zero-based index to one-based Month
     int daysInMonth = month.length(LocalDate.of(year, month, 1).isLeapYear());
 
     // Update the day combo box with valid days
@@ -100,15 +99,20 @@ public class AddEventForm extends JDialog {
 
   private void submitForm() {
     // Extract the information from the form
-    String firstName = eventName.getText();
+    String eventNameText = eventName.getText();
     String eventDescriptionText = eventDescription.getText();
-    int monthIndex = monthComboBox.getSelectedIndex();
+    int monthIndex = monthComboBox.getSelectedIndex(); // Zero-based
     int day = (int) dayComboBox.getSelectedItem();
     int year = (int) yearComboBox.getSelectedItem();
 
-    // Process the data, like adding the member to a list or database
-    observer.addEvent(new Event(firstName, eventDescriptionText, new Date(day, monthIndex, year),
-            this.clubName));
+    // Construct a proper LocalDate object
+    LocalDate eventDate = LocalDate.of(year, monthIndex + 1, day); // Month is one-based in LocalDate
+
+    // Convert to java.sql.Date for database storage
+    Date sqlDate = Date.valueOf(eventDate);
+
+    // Process the data, like adding the event to a list or database
+    observer.addEvent(new Event(eventNameText, eventDescriptionText, sqlDate, this.clubName));
 
     // Close the dialog after submission
     dispose();
