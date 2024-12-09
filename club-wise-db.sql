@@ -9,9 +9,9 @@ CREATE TABLE club
     club_description VARCHAR(500) NOT NULL,
     active BOOL NOT NULL,
     category enum("STEM", 
-				"Arts and Culture", 
-                "Sports and Recreation", 
-                "Community Service and Social Impact", 
+                "Arts and Culture",
+                "Sports and Recreation",
+                "Community Service and Social Impact",
                 "Social and Special Interests",
                 "Media and Communications",
                 "Religious and Spiritual") NOT NULL
@@ -24,6 +24,7 @@ CREATE TABLE role
 
 INSERT INTO role (role_name)
 VALUES ('President'), ('Vice President'), ('Secretary'), ('Treasurer'), ('Member');
+
 CREATE TABLE member_of_club
 (
     member_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -33,20 +34,20 @@ CREATE TABLE member_of_club
     club_name VARCHAR(64) NOT NULL,
     role_name VARCHAR(64) NOT NULL,
 
-    FOREIGN KEY (club_name) REFERENCES club(club_name),
-    FOREIGN KEY (role_name) REFERENCES role(role_name)
+    FOREIGN KEY (club_name) REFERENCES club(club_name) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (role_name) REFERENCES role(role_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE purchase
 (
     purchase_id INT PRIMARY KEY AUTO_INCREMENT,
-    purhcase_title VARCHAR(64) NOT NULL,
+    purchase_title VARCHAR(64) NOT NULL,
     purchase_description VARCHAR(500),
     cost DECIMAL NOT NULL,
     purchase_date DATE NOT NULL,
     club_name VARCHAR(64) NOT NULL,
 
-    FOREIGN KEY (club_name) REFERENCES club(club_name)
+    FOREIGN KEY (club_name) REFERENCES club(club_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE social_media
@@ -56,7 +57,7 @@ CREATE TABLE social_media
     club_name VARCHAR(64) NOT NULL,
 
     PRIMARY KEY (platform, username),
-    FOREIGN KEY (club_name) REFERENCES club(club_name)
+    FOREIGN KEY (club_name) REFERENCES club(club_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE event
@@ -67,7 +68,7 @@ CREATE TABLE event
     club_name VARCHAR(64) NOT NULL,
 
     PRIMARY KEY (event_title, event_date, club_name),
-    FOREIGN KEY (club_name) REFERENCES club(club_name)
+    FOREIGN KEY (club_name) REFERENCES club(club_name) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE member_attends_event
@@ -78,9 +79,10 @@ CREATE TABLE member_attends_event
     member_id INT NOT NULL,
 
     PRIMARY KEY (event_title, event_date, club_name, member_id),
-    FOREIGN KEY (event_title, event_date, club_name) REFERENCES event(event_title, event_date, club_name),
-    FOREIGN KEY (member_id) REFERENCES member_of_club(member_id)
+    FOREIGN KEY (event_title, event_date, club_name) REFERENCES event(event_title, event_date, club_name) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES member_of_club(member_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 DELIMITER $$
 CREATE PROCEDURE get_clubs_by_category(
