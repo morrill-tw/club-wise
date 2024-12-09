@@ -440,4 +440,35 @@ public class ClubWiseApp implements App {
     }
     ui.displaySocials(name, getSocials(name));
   }
+
+  @Override
+  public void openClubForm(String name) {
+    ui.displayClubForm(name);
+  }
+
+  @Override
+  public void editClub(Club club) {
+    // SQL to call the stored procedure
+    String sql = "{CALL update_club(?, ?, ?, ?)}";
+    String clubName = club.getName();
+    String clubDescription = club.getDescription();
+    Boolean clubStatus = club.getActiveStatus();
+    String clubCategory = club.getCategory();
+    System.out.print(" /" + clubName + clubDescription + clubStatus + clubCategory);
+
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, clubName);
+      callableStatement.setString(2, clubDescription);
+      callableStatement.setBoolean(3, clubStatus);
+      callableStatement.setString(4, clubCategory);
+
+      // Execute the stored procedure
+      callableStatement.executeQuery();
+      ui.refreshClubs(getClubs());
+    } catch (SQLException e) {
+      System.err.println("SQL error: " + e.getMessage());
+    }
+  }
 }

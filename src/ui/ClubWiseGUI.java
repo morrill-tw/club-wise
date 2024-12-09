@@ -195,6 +195,14 @@ public class ClubWiseGUI extends JFrame implements UI {
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.setOpaque(false);
 
+    JButton editClub = new JButton("Edit Club");
+
+    editClub.addActionListener(e -> {
+      observer.openClubForm(club.getName());
+    });
+    buttonPanel.add(editClub);
+
+
     JButton socialsButton = new JButton("View Socials");
 
     socialsButton.addActionListener(e -> {
@@ -612,5 +620,11 @@ public class ClubWiseGUI extends JFrame implements UI {
     // Repaint and revalidate
     cards.revalidate();
     cards.repaint();
+  }
+
+  @Override
+  public void displayClubForm(String name) {
+    EditClubForm editForm = new EditClubForm(this, observer, name);
+    editForm.setVisible(true);
   }
 }

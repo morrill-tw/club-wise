@@ -35,4 +35,8 @@ public interface App {
   void deleteSocial(SocialMedia social);
 
   void addSocial(String clubName, SocialMedia socialMedia);
+
+  void openClubForm(String name);
+
+  void editClub(Club club);
 }
