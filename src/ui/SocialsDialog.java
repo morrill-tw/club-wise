@@ -2,7 +2,6 @@ package ui;
 
 import java.awt.*;
 import java.util.List;
-
 import javax.swing.*;
 
 import app.App;
@@ -20,24 +19,38 @@ public class SocialsDialog extends JDialog {
 
     this.observer = observer;
 
-    // Use BoxLayout on the dialog itself
-    setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS)); // Make sure to use getContentPane()
+    // Use BorderLayout on the dialog's content pane
+    setLayout(new BorderLayout()); // Make sure to use getContentPane()
+
+    // Create a panel for social media labels
+    JPanel socialsPanel = new JPanel();
+    socialsPanel.setLayout(new BoxLayout(socialsPanel, BoxLayout.Y_AXIS)); // Stack labels vertically
 
     // Add the social media labels
     for (SocialMedia social : socials) {
       JLabel socialLabel = new JLabel(social.getPlatform() + ": " + social.getUsername());
       socialLabel.setAlignmentX(Component.CENTER_ALIGNMENT);  // Center-align the label
-      add(socialLabel);
+      socialsPanel.add(socialLabel);
     }
 
-    // Add exit button with centered alignment
+    // Add the socials panel to the top (NORTH) of the dialog
+    add(socialsPanel, BorderLayout.NORTH);
+
+    // Create a panel to center the exit button
+    JPanel exitPanel = new JPanel();
+    exitPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); // Center the button within the panel
+
+    // Add exit button to the panel
     exitButton = new JButton("Exit");
-    exitButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Center-align the button
+    exitButton.setPreferredSize(new Dimension(100, 30)); // Set the preferred size to make it smaller
     exitButton.addActionListener(e -> {
       dispose();
     });
 
-    add(exitButton);
+    exitPanel.add(exitButton);  // Add button to the panel
+
+    // Add the exit panel to the bottom (SOUTH) of the dialog
+    add(exitPanel, BorderLayout.SOUTH);
 
     setLocationRelativeTo(parent);
   }
