@@ -25,4 +25,9 @@ public interface App {
   void addClub(Club club);
 
   void openSocialsDialog(String name);
+
+  void editMember(Member member, String clubName);
+
+  void editEvent(Event event);
+  
 }

@@ -9,7 +9,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.Month;
 
-public class AddEventForm extends JDialog {
+public class EditEventForm extends JDialog {
+  private Date eventDate;
+  private final String eventTitle;
   private App observer;
   private JTextField eventName;
   private JTextField eventDescription;
@@ -20,11 +22,13 @@ public class AddEventForm extends JDialog {
   private JButton cancelButton;
   private String clubName;
 
-  public AddEventForm(JFrame parent, App observer) {
+  public EditEventForm(JFrame parent, App observer, String clubName, Date eventDate, String eventTitle) {
     super(parent, "Add Event", true);
-
     setSize(350, 280);
 
+    this.clubName = clubName;
+    this.eventDate = eventDate;
+    this.eventTitle = eventTitle;
     // Prevent resizing
     setResizable(false);
 
@@ -54,18 +58,8 @@ public class AddEventForm extends JDialog {
     // Create Day ComboBox
     dayComboBox = new JComboBox<>();
 
-    // Add components to the form
-    add(new JLabel("Event Name:"));
-    add(eventName);
     add(new JLabel("Event Description:"));
     add(eventDescription);
-    add(new JLabel("Date of Event:                                                                 "));
-    add(new JLabel("Month:"));
-    add(monthComboBox);
-    add(new JLabel("Day:"));
-    add(dayComboBox);
-    add(new JLabel("Year:"));
-    add(yearComboBox);
     add(submitButton);
     add(cancelButton);
 
@@ -112,7 +106,7 @@ public class AddEventForm extends JDialog {
     Date sqlDate = Date.valueOf(eventDate);
 
     // Process the data, like adding the event to a list or database
-    observer.addEvent(new Event(eventNameText, eventDescriptionText, sqlDate, clubName));
+    observer.editEvent(new Event(eventTitle, eventDescriptionText, this.eventDate, clubName));
 
     // Close the dialog after submission
     dispose();

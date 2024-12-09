@@ -305,7 +305,7 @@ public class ClubWiseGUI extends JFrame implements UI {
       gbc.gridy = row;
 
       // Add the member card to the grid
-      membersContainer.add(createMemberCard(members.get(i)), gbc);
+      membersContainer.add(createMemberCard(members.get(i), clubName), gbc);
 
       col++;  // Move to next column
     }
@@ -323,7 +323,7 @@ public class ClubWiseGUI extends JFrame implements UI {
       gbc.gridy = row;
 
       // Add the member card to the grid
-      membersContainer.add(createMemberCard(members.get(i)), gbc);
+      membersContainer.add(createMemberCard(members.get(i), clubName), gbc);
 
       col++;  // Move to next column
 
@@ -378,7 +378,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     cards.repaint();
   }
 
-  private JPanel createMemberCard(Member member) {
+  private JPanel createMemberCard(Member member, String clubName) {
     JPanel memberCard = new JPanel();
     memberCard.setLayout(new BorderLayout());
     memberCard.setPreferredSize(new Dimension(300, 300)); // Fixed size for each card
@@ -429,11 +429,25 @@ public class ClubWiseGUI extends JFrame implements UI {
 
     infoPanel.add(trashButton);
 
+
+    JButton editButton = new JButton("Edit Member");
+    editButton.setPreferredSize(new Dimension(40, 40));
+    editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    editButton.addActionListener(e -> {
+      EditMemberForm memberForm = new EditMemberForm(this, observer, member.getId(), member.getRoleName());
+      memberForm.setVisible(true);
+      memberForm.setClub(member.getClubName());
+    });
+    infoPanel.add(editButton);
+
     memberCard.add(infoPanel, BorderLayout.CENTER);
     return memberCard;
   }
 
-  private JPanel createEventCard(Event event) {
+  private JPanel createEventCard(Event event, String clubName) {
     JPanel eventCard = new JPanel();
     eventCard.setLayout(new BorderLayout());
     eventCard.setPreferredSize(new Dimension(300, 300)); // Fixed size for each card
@@ -501,8 +515,23 @@ public class ClubWiseGUI extends JFrame implements UI {
         JOptionPane.showMessageDialog(eventCard, "Event deleted: " + event.getEventTitle());
       }
     });
-
     infoPanel.add(trashButton);
+
+
+    JButton editButton = new JButton("Edit Event");
+    editButton.setPreferredSize(new Dimension(40, 40));
+    editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+    editButton.addActionListener(e -> {
+      EditEventForm editForm = new EditEventForm(this, observer, event.getClubName(), event.getEventDate(), event.getEventTitle());
+      editForm.setVisible(true);
+      editForm.setClub(clubName);
+    });
+    infoPanel.add(editButton);
+
+
 
     eventCard.add(infoPanel, BorderLayout.CENTER);
     return eventCard;
@@ -552,7 +581,7 @@ public class ClubWiseGUI extends JFrame implements UI {
       gbc.gridy = row;
 
       // Add the member card to the grid
-      eventsContainer.add(createEventCard(eventList.get(i)), gbc);
+      eventsContainer.add(createEventCard(eventList.get(i), clubName), gbc);
 
       col++;  // Move to next column
     }
@@ -570,7 +599,7 @@ public class ClubWiseGUI extends JFrame implements UI {
       gbc.gridy = row;
 
       // Add the member card to the grid
-      eventsContainer.add(createEventCard(eventList.get(i)), gbc);
+      eventsContainer.add(createEventCard(eventList.get(i), clubName), gbc);
 
       col++;  // Move to next column
 

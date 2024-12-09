@@ -119,24 +119,24 @@ public class ClubWiseApp implements App {
     Date eventDate = event.getEventDate();
     String clubName = event.getClubName();
 
-      // Create a CallableStatement to call the stored procedure
-      try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-        // Set input parameters for the procedure
-        callableStatement.setString(1, eventTitle);
-        callableStatement.setString(2, eventDescription);
-        callableStatement.setDate(3, eventDate);
-        callableStatement.setString(4, clubName);
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, eventTitle);
+      callableStatement.setString(2, eventDescription);
+      callableStatement.setDate(3, eventDate);
+      callableStatement.setString(4, clubName);
 
-        // Execute the stored procedure
-        try (ResultSet resultSet = callableStatement.executeQuery()) {
-          // Process the result (the result message from the procedure)
-          if (resultSet.next()) {
-            String resultMessage = resultSet.getString("ResultMessage");
-            System.out.println("Procedure Result: " + resultMessage);
-          }
-
+      // Execute the stored procedure
+      try (ResultSet resultSet = callableStatement.executeQuery()) {
+        // Process the result (the result message from the procedure)
+        if (resultSet.next()) {
+          String resultMessage = resultSet.getString("ResultMessage");
+          System.out.println("Procedure Result: " + resultMessage);
         }
-        ui.displayEvents(clubName, getEvents(clubName));
+
+      }
+      ui.displayEvents(clubName, getEvents(clubName));
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
     }
@@ -248,22 +248,28 @@ public class ClubWiseApp implements App {
   public void deleteMember(Member member) {
     int memberId = member.getId();
     try {
-    // SQL to call the stored procedure
-    String sql = "{CALL remove_member_from_club(?)}";
+      // SQL to call the stored procedure
+      String sql = "{CALL remove_member_from_club(?)}";
 
-    // Prepare the callable statement
-    CallableStatement stmt = conn.prepareCall(sql);
-    stmt.setInt(1, memberId);  // Set the member ID
+      // Prepare the callable statement
+      CallableStatement stmt = conn.prepareCall(sql);
+      stmt.setInt(1, memberId);  // Set the member ID
 
-    // Execute the procedure
-    boolean hasResultSet = stmt.execute();
+      // Execute the procedure
+      boolean hasResultSet = stmt.execute();
 
-    // Process the result (Message from the procedure)
-    if (hasResultSet) {
-      ResultSet rs = stmt.getResultSet();
-      while (rs.next()) {
-        String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+      // Process the result (Message from the procedure)
+      if (hasResultSet) {
+        ResultSet rs = stmt.getResultSet();
+        while (rs.next()) {
+          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+        }
       }
+      ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
+    } catch (SQLException e) {
+      // Handle any SQL exceptions
+      e.printStackTrace();
+      System.out.print("Error occurred while removing member: " + e.getMessage());
     }
       ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
   } catch (SQLException e) {
@@ -271,6 +277,73 @@ public class ClubWiseApp implements App {
     e.printStackTrace();
     System.out.print("Error occurred while removing member: " + e.getMessage());
   }
+}
+
+  public void editMember(Member member, String clubName) {
+    try {
+      // SQL to call the stored procedure
+      String sql = "{CALL edit_member_info(?, ?, ?, ?)}";
+      int memberId = member.getId();
+      String firstName = member.getFirstName();
+      String lastName = member.getLastName();
+      Date joinDate = member.getJoinDate();
+
+      CallableStatement stmt = conn.prepareCall(sql);
+      stmt.setInt(1, memberId);
+      stmt.setString(2, firstName);
+      stmt.setString(3, lastName);
+      stmt.setDate(4, joinDate);
+
+      // Execute the procedure
+      boolean hasResultSet = stmt.execute();
+
+      // Process the result (Message from the procedure)
+      if (hasResultSet) {
+        ResultSet rs = stmt.getResultSet();
+        while (rs.next()) {
+          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+        }
+      }
+      ui.displayClubs(getClubs());
+    } catch (SQLException e) {
+      // Handle any SQL exceptions
+      e.printStackTrace();
+      System.out.println("Error occurred while editing member: " + e.getMessage());
+    }
+  }
+
+  public void editEvent(Event event) {
+    try {
+      String eventTitle = event.getEventTitle();
+      Date eventDate = event.getEventDate();
+      String clubName = event.getClubName();
+      String newEventDescription = event.getEventDescription();
+      // Prepare the stored procedure call
+      String sql = "{CALL edit_event(?, ?, ?, ?)}";
+      CallableStatement callableStatement = conn.prepareCall(sql);
+
+      // Set input parameters
+      callableStatement.setString(1, eventTitle);
+      callableStatement.setDate(2, eventDate);
+      callableStatement.setString(3, clubName);
+      callableStatement.setString(4, newEventDescription);
+
+      // Execute the stored procedure
+      boolean hasResultSet = callableStatement.execute();
+
+      // Handle the result
+      if (hasResultSet) {
+        ResultSet resultSet = callableStatement.getResultSet();
+        while (resultSet.next()) {
+          System.out.println(resultSet.getString(1)); // Print success or error message
+        }
+      } else {
+        System.out.println("Event updated successfully.");
+      }
+      ui.displayEvents(clubName, this.getEvents(clubName));
+    } catch (SQLException e) {
+      e.printStackTrace(); // Print SQL exception details
+    }
   }
 
   @Override
