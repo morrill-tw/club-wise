@@ -2,7 +2,7 @@ package ui;
 
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.*;
@@ -14,6 +14,7 @@ import app.Club;
 import app.EmptyFilter;
 import app.Event;
 import app.Member;
+import app.SocialMedia;
 
 public class ClubWiseGUI extends JFrame implements UI {
   private final JPanel cards;
@@ -52,6 +53,7 @@ public class ClubWiseGUI extends JFrame implements UI {
 
   @Override
   public void refreshClubs(List<Club> clubs) {
+    Collections.reverse(clubs);
     JSplitPane splitPane = ((JSplitPane) ((JPanel) cards.getComponent(0)).getComponent(0));
     splitPane.setRightComponent(createClubsPanel(clubs));
     splitPane.setDividerLocation(splitPane.getDividerLocation());
@@ -59,6 +61,7 @@ public class ClubWiseGUI extends JFrame implements UI {
 
   @Override
   public void displayClubs(List<Club> clubs) {
+    Collections.reverse(clubs);
     cards.removeAll();
     // Create the main container for the clubs view
     JPanel mainContainer = new JPanel();
@@ -156,6 +159,21 @@ public class ClubWiseGUI extends JFrame implements UI {
     clubsContainer.setLayout(new GridLayout(0, 1)); // Stack clubs vertically
     clubsContainer.setBackground(new Color(100, 100, 255));
 
+    JButton addClubButton = new JButton("+");
+    addClubButton.setFont(new Font("Arial", Font.BOLD, 48));
+    addClubButton.setForeground(new Color(100, 115, 225));
+    addClubButton.setPreferredSize(new Dimension(300, 300)); // Fixed size for the button
+    addClubButton.setFocusPainted(false);
+    addClubButton.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(100, 115, 225), 10),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+    ));
+    addClubButton.addActionListener(e -> {
+      AddClubForm addClubForm = new AddClubForm(this, observer);
+      addClubForm.setVisible(true);
+    });
+    clubsContainer.add(addClubButton);
+
     // Loop through each club and create a panel for it
     for (Club club : clubs) {
       // Add this club panel to the container
@@ -186,26 +204,38 @@ public class ClubWiseGUI extends JFrame implements UI {
     infoPanel.setOpaque(false);
 
     JLabel nameLabel = new JLabel(club.getName());
-    nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+    nameLabel.setFont(new Font("Arial", Font.BOLD, 24));
     infoPanel.add(nameLabel);
 
-    JLabel descriptionLabel = new JLabel(club.getDescription());
-    descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-    infoPanel.add(descriptionLabel);
-
-    JLabel activeStatusLabel = new JLabel("Status: " + (club.getActiveStatus() ? "Active" : "Inactive"));
-    activeStatusLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+    JLabel activeStatusLabel = new JLabel((club.getActiveStatus() ? "Active" : "Inactive"));
+    activeStatusLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+    if (club.getActiveStatus()) {
+      activeStatusLabel.setForeground(new Color(50, 175, 50));
+    } else {
+      activeStatusLabel.setForeground(Color.RED);
+    }
     infoPanel.add(activeStatusLabel);
 
-    JLabel categoryLabel = new JLabel("Category: " + club.getCategory());
-    categoryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+    JLabel categoryLabel = new JLabel(club.getCategory());
+    categoryLabel.setFont(new Font("Arial", Font.ITALIC, 18));
     infoPanel.add(categoryLabel);
+
+    JLabel descriptionLabel = new JLabel(club.getDescription());
+    descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+    infoPanel.add(descriptionLabel);
 
     clubPanel.add(infoPanel, BorderLayout.CENTER);
 
     // Button panel
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.setOpaque(false);
+
+    JButton socialsButton = new JButton("View Socials");
+
+    socialsButton.addActionListener(e -> {
+      observer.openSocialsDialog(club.getName());
+    });
+    buttonPanel.add(socialsButton);
 
     JButton membersButton = new JButton("View Members");
 
@@ -223,6 +253,11 @@ public class ClubWiseGUI extends JFrame implements UI {
     clubPanel.add(buttonPanel, BorderLayout.SOUTH);
 
     return clubPanel;
+  }
+
+  public void displaySocials (List<SocialMedia> socials) {
+    SocialsDialog socialsDialog = new SocialsDialog(this, observer, socials);
+    socialsDialog.setVisible(true);
   }
 
   @Override
@@ -357,32 +392,30 @@ public class ClubWiseGUI extends JFrame implements UI {
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
     infoPanel.setOpaque(false);
 
+    // Name label
     JLabel nameLabel = new JLabel(member.getFirstName() + " " + member.getLastName());
     nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
     nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(nameLabel);
 
+    // Role label
     JLabel roleLabel = new JLabel(member.getRoleName());
     roleLabel.setFont(new Font("Arial", Font.ITALIC, 16));
     roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(roleLabel);
 
+    // Join date label
     JLabel joinDateLabel = new JLabel("Joined: " + member.getJoinDate());
     joinDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
     joinDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(joinDateLabel);
 
+    // Trash button
     JButton trashButton = new JButton("Delete Member");
     trashButton.setPreferredSize(new Dimension(40, 40));
     trashButton.setBackground(new Color(255, 130, 130));
     trashButton.setForeground(Color.WHITE);
-    trashButton.setAlignmentY(BOTTOM_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-
+    trashButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Ensure button is centered
     trashButton.addActionListener(e -> {
       int confirm = JOptionPane.showConfirmDialog(memberCard,
               "Are you sure you want to delete this member?",
@@ -393,6 +426,7 @@ public class ClubWiseGUI extends JFrame implements UI {
         JOptionPane.showMessageDialog(memberCard, "Member deleted: " + member.getFirstName() + " " + member.getLastName());
       }
     });
+
     infoPanel.add(trashButton);
 
 
@@ -430,29 +464,46 @@ public class ClubWiseGUI extends JFrame implements UI {
     JLabel nameLabel = new JLabel(event.getEventTitle());
     nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
     nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
     infoPanel.add(nameLabel);
 
-    JLabel roleLabel = new JLabel(event.getEventDescription());
-    roleLabel.setFont(new Font("Arial", Font.ITALIC, 16));
-    roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-    infoPanel.add(roleLabel);
+    JLabel dateLabel = new JLabel("Date: " + event.getEventDate());
+    dateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+    dateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    infoPanel.add(dateLabel);
 
-    JLabel joinDateLabel = new JLabel("Date: " + event.getEventDate());
-    joinDateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-    joinDateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-    infoPanel.add(joinDateLabel);
+    // Create a JTextArea for event description
+    JTextArea roleTextArea = new JTextArea(event.getEventDescription());
+    roleTextArea.setFont(new Font("Arial", Font.ITALIC, 16));
+    roleTextArea.setLineWrap(true); // Enable line wrapping
+    roleTextArea.setWrapStyleWord(true); // Wrap at word boundaries, not characters
+    roleTextArea.setEditable(false); // Make it non-editable
+    roleTextArea.setOpaque(false); // Keep background transparent
+    roleTextArea.setAlignmentX(Component.CENTER_ALIGNMENT);
+    roleTextArea.setPreferredSize(new Dimension(250, 60)); // Adjust height to fit more lines
+    roleTextArea.setMaximumSize(new Dimension(250, 100)); // Allow it to expand vertically within the card
+
+    // Center the text horizontally
+    roleTextArea.setAlignmentY(Component.CENTER_ALIGNMENT);
+    roleTextArea.setCaretPosition(0);  // Ensure text is aligned properly from the start
+
+    // Make sure the text is centered horizontally and vertically within the JTextArea
+    roleTextArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT); // Left to right for proper alignment
+
+    // Create a JPanel for wrapping the JTextArea
+    JPanel textPanel = new JPanel();
+    textPanel.setLayout(new BorderLayout());
+    textPanel.add(roleTextArea, BorderLayout.CENTER);
+
+    // Center the text inside the text panel
+    textPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    textPanel.setOpaque(false);
+    infoPanel.add(textPanel);
 
     JButton trashButton = new JButton("Delete Event");
     trashButton.setPreferredSize(new Dimension(40, 40));
     trashButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     trashButton.setBackground(new Color(255, 130, 130));
     trashButton.setForeground(Color.WHITE);
-    trashButton.setAlignmentY(BOTTOM_ALIGNMENT);
-    nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
 
     trashButton.addActionListener(e -> {
       int confirm = JOptionPane.showConfirmDialog(eventCard,

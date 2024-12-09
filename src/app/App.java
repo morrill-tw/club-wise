@@ -22,7 +22,12 @@ public interface App {
 
   void deleteMember(Member member);
 
+  void addClub(Club club);
+
+  void openSocialsDialog(String name);
+
   void editMember(Member member, String clubName);
 
   void editEvent(Event event);
+  
 }

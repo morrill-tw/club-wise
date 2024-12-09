@@ -6,6 +6,7 @@ import app.App;
 import app.Club;
 import app.Event;
 import app.Member;
+import app.SocialMedia;
 
 public interface UI {
 
@@ -25,4 +26,6 @@ public interface UI {
   void displayEvents(String clubName, List<Event> events);
 
   void refreshClubs(List<Club> clubs);
+
+  void displaySocials(List<SocialMedia> socials);
 }
