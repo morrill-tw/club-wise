@@ -1,11 +1,20 @@
-This Application was built using Java Swing and the JDBC SQL connector. Make sure you have the connector
-downloaded and installed into the project module.
+This Application was built using Java Swing and the JDBC SQL connector to connect to a MySQL database. It offers a user interface
+for creating, reading, deleting, and updating data related to clubs. This includes member data, purchases, social media accounts, and more!
 
-You may need to change the address of the dump as well as other related url. Check the connection that
-your local host is on and update accordingly! You can find this important link in line 20 of
-our ClubWiseApp in the app directory. when prompted, put your own username (usually root) and whatever
-password you have (if nothing put nothing). Then you should be able to see all of our data and interact
-with our application!
+# Installation/Setup Instructions
 
-If you need more assistance, follow the directions posted on the class Canvas for setting up a java connection
-and connecting it to the project!
+First, nsure that you have downloaded the zip file that includes the src folder and the clubwise jar file. Unzip this file.
+
+Next, you must have the MySQL Workbench downloaded on your machine. Once downloaded, open up the workbench, and connect to a MySQL server running on localhost with port 3306. Load the dump file here, and execute it to create the database. Ensure that this connection remains open (do not close out of the workbench).
+
+That's it for setup!
+
+# Running the Application
+
+To run the application, follow these steps:
+
+1. Open up a terminal.
+2. cd to the unzipped folder containing all of the project files.
+3. Execute the following command: java -jar clubwise.jar
+
+After following these four steps, you should be able to interact with the application. First it will prompt you for your MySQL username and password, and then, if it is able to successfully connect to the database, you will be able to interact with it through the provided menu. Tada!
