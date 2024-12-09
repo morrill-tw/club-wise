@@ -14,6 +14,7 @@ import app.Club;
 import app.EmptyFilter;
 import app.Event;
 import app.Member;
+import app.Purchase;
 import app.SocialMedia;
 
 public class ClubWiseGUI extends JFrame implements UI {
@@ -211,6 +212,13 @@ public class ClubWiseGUI extends JFrame implements UI {
     });
     buttonPanel.add(socialsButton);
 
+    JButton purchasesButton = new JButton("View Purchases");
+
+    purchasesButton.addActionListener(e -> {
+      observer.openPurchasesDialog(null, club.getName());
+    });
+    buttonPanel.add(purchasesButton);
+
     JButton membersButton = new JButton("View Members");
 
     membersButton.addActionListener(e -> {
@@ -232,6 +240,11 @@ public class ClubWiseGUI extends JFrame implements UI {
   public void displaySocials (String clubName, List<SocialMedia> socials) {
     SocialsDialog socialsDialog = new SocialsDialog(this, observer, socials, clubName);
     socialsDialog.setVisible(true);
+  }
+
+  public void displayPurchases (String clubName, List<Purchase> purchases) {
+    PurchasesDialog purchaseDialog = new PurchasesDialog(this, observer, purchases, clubName);
+    purchaseDialog.setVisible(true);
   }
 
   @Override

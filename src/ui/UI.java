@@ -6,6 +6,7 @@ import app.App;
 import app.Club;
 import app.Event;
 import app.Member;
+import app.Purchase;
 import app.SocialMedia;
 
 public interface UI {
@@ -30,4 +31,6 @@ public interface UI {
   void displaySocials(String clubName, List<SocialMedia> socials);
 
   void displayClubForm(String name);
+
+  void displayPurchases(String clubName, List<Purchase> purchases);
 }
