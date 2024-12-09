@@ -2,6 +2,7 @@ package app;
 
 import java.util.List;
 
+import ui.PurchasesDialog;
 import ui.SocialsDialog;
 
 public interface App {
@@ -39,4 +40,10 @@ public interface App {
   void openClubForm(String name);
 
   void editClub(Club club);
+
+  void deletePurchase(Purchase purchase);
+
+  void openPurchasesDialog(PurchasesDialog purchasesDialog, String clubName);
+
+  void addPurchase(String clubName, Purchase purchase);
 }

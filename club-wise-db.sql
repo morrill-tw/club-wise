@@ -42,9 +42,7 @@ CREATE TABLE purchase
 (
     purchase_id INT PRIMARY KEY AUTO_INCREMENT,
     purchase_title VARCHAR(64) NOT NULL,
-    purchase_description VARCHAR(500),
-    cost DECIMAL NOT NULL,
-    purchase_date DATE NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL,
     club_name VARCHAR(64) NOT NULL,
 
     FOREIGN KEY (club_name) REFERENCES club(club_name) ON DELETE CASCADE ON UPDATE CASCADE
@@ -482,9 +480,41 @@ VALUES
 
 
 -- get purchases given a club name
+DELIMITER $$
 
+CREATE PROCEDURE get_purchases_by_club(
+    IN p_club_name VARCHAR(64)
+)
+BEGIN
+    -- Check if the club exists
+    IF EXISTS (SELECT 1 FROM club WHERE club_name = p_club_name) THEN
+        -- Retrieve social media details for the specified club
+SELECT *
+FROM purchase
+WHERE club_name = p_club_name;
+ELSE
+        -- If the club does not exist, return an error message
+SELECT CONCAT('Club with name "', p_club_name, '" does not exist.') AS ErrorMessage;
+END IF;
+END$$
+DELIMITER ;
 
 -- create purchases
+DELIMITER $$
+CREATE PROCEDURE create_purchase(
+IN p_title VARCHAR(64),
+p_cost DECIMAL,
+p_club_name VARCHAR(64)
+)
+BEGIN
+INSERT INTO purchase ( purchase_title, cost, club_name)
+VALUES (p_title, p_cost, p_club_name);
+END $$
+DELIMITER ;
+
+INSERT INTO purchase(purchase_title, cost, club_name)
+VALUES("Food", 20.50, "NER"),
+("Car Parts", 300.20, "NER");
 
 -- create socials
 DELIMITER $$
@@ -500,6 +530,14 @@ END $$
 DELIMITER ;
 
 -- delete purchases
+DELIMITER $$
+CREATE PROCEDURE delete_purchase(
+IN p_purchase_id INT
+)
+BEGIN
+DELETE FROM purchase WHERE purchase_id = p_purchase_id;
+END $$
+DELIMITER ;
 
 -- delete socials
 DELIMITER $$

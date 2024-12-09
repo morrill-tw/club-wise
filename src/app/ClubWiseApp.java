@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
+import ui.PurchasesDialog;
 import ui.SocialsDialog;
 import ui.UI;
 
@@ -470,5 +471,84 @@ public class ClubWiseApp implements App {
     } catch (SQLException e) {
       System.err.println("SQL error: " + e.getMessage());
     }
+  }
+
+  @Override
+  public void deletePurchase(Purchase purchase) {
+    int id = purchase.getPurchaseId();
+    try {
+      // SQL to call the stored procedure
+      String sql = "{CALL delete_purchase(?)}";
+
+      // Prepare the callable statement
+      CallableStatement stmt = conn.prepareCall(sql);
+      stmt.setInt(1, id);  // Set the member ID
+
+      // Execute the procedure
+      boolean hasResultSet = stmt.execute();
+
+      // Process the result (Message from the procedure)
+      if (hasResultSet) {
+        ResultSet rs = stmt.getResultSet();
+        while (rs.next()) {
+          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+        }
+      }
+      ui.displayPurchases(purchase.getClubName(), getPurchases(purchase.getClubName()));
+    } catch (SQLException e) {
+      // Handle any SQL exceptions
+      e.printStackTrace();
+      System.out.print("Error occurred while removing purchase: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void openPurchasesDialog(PurchasesDialog prev, String clubName) {
+    if (prev != null) {
+      prev.dispose();
+    }
+    ui.displayPurchases(clubName, getPurchases(clubName));
+  }
+
+  @Override
+  public void addPurchase(String clubName, Purchase purchase) {
+    String sql = "{CALL create_purchase(?, ?, ?)}";
+    String title = purchase.getTitle();
+    Double cost = purchase.getCost();
+
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, title);
+      callableStatement.setDouble(2, cost);
+      callableStatement.setString(3, clubName);
+
+      // Execute the stored procedure
+      callableStatement.executeQuery();
+      ui.displayPurchases(clubName, getPurchases(clubName));
+    } catch (SQLException e) {
+      System.err.println("SQL error: " + e.getMessage());
+    }
+  }
+
+  private List<Purchase> getPurchases(String clubName) {
+    ResultSet rs;
+    List<Purchase> purchases = new ArrayList<Purchase>();
+    try {
+      PreparedStatement ps =
+              conn.prepareStatement("CALL get_purchases_by_club( " + "\"" + clubName +"\"" + " )");
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        int id = rs.getInt("purchase_id");
+        String title = rs.getString("purchase_title");
+        Double cost = rs.getDouble("cost");
+
+        Purchase purchase = new Purchase(id, title, cost, clubName);
+        purchases.add(purchase);
+      }
+    } catch (SQLException e) {
+      System.out.println("Error fetching purchases. " + e.getMessage());
+    }
+    return purchases;
   }
 }
