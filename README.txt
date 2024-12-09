@@ -3,7 +3,7 @@ for creating, reading, deleting, and updating data related to clubs. This includ
 
 # Installation/Setup Instructions
 
-First, nsure that you have downloaded the zip file that includes the src folder and the clubwise jar file. Unzip this file.
+First, ensure that you have downloaded the zip file that includes the src folder and the clubwise jar file. Unzip this file.
 
 Next, you must have the MySQL Workbench downloaded on your machine. Once downloaded, open up the workbench, and connect to a MySQL server running on localhost with port 3306. Load the dump file here, and execute it to create the database. Ensure that this connection remains open (do not close out of the workbench).
 
