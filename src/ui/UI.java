@@ -28,4 +28,6 @@ public interface UI {
   void refreshClubs(List<Club> clubs);
 
   void displaySocials(List<SocialMedia> socials);
+
+  void displayClubForm(String name);
 }

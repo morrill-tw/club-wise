@@ -29,5 +29,8 @@ public interface App {
   void editMember(Member member, String clubName);
 
   void editEvent(Event event);
-  
+
+  void openClubForm(String name);
+
+  void editClub(Club club);
 }

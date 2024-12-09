@@ -480,7 +480,7 @@ VALUES
 
 
 -- get purchases given a club name
-    
+
 
 -- create purchases
 
@@ -489,3 +489,43 @@ VALUES
 -- delete purchases
 
 -- delete socials
+
+-- update club procedure
+
+DELIMITER $$
+
+CREATE PROCEDURE update_club(
+    IN p_club_name VARCHAR(64),
+    IN p_new_club_description VARCHAR(500),
+    IN p_new_active_status BOOL,
+    IN p_new_category ENUM("STEM",
+    "Arts and Culture",
+    "Sports and Recreation",
+    "Community Service and Social Impact",
+    "Social and Special Interests",
+    "Media and Communications",
+    "Religious and Spiritual")
+)
+BEGIN
+    -- Check if the club exists
+    IF EXISTS (
+        SELECT 1
+        FROM club
+        WHERE club_name = p_club_name
+    ) THEN
+        -- Update the club details
+UPDATE club
+SET
+    club_description = p_new_club_description,
+    active = p_new_active_status,
+    category = p_new_category
+WHERE club_name = p_club_name;
+
+-- Return success message
+SELECT CONCAT('Club "', p_club_name, '" has been updated successfully.') AS Message;
+ELSE
+        -- Return failure message if the club does not exist
+SELECT CONCAT('Club "', p_club_name, '" does not exist.') AS ErrorMessage;
+END IF;
+END$$
+DELIMITER ;
