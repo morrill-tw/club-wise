@@ -26,7 +26,7 @@ public interface UI {
   void displayEvents(String clubName, List<Event> events);
 
   void refreshClubs(List<Club> clubs);
-  
+
   void displaySocials(String clubName, List<SocialMedia> socials);
 
   void displayClubForm(String name);

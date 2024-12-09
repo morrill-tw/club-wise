@@ -23,7 +23,7 @@ public class EditMemberForm extends JDialog {
   private String clubName;
 
   public EditMemberForm(JFrame parent, App observer, int id, String role, String clubName) {
-    super(parent, "Add Member", true);
+    super(parent, "Edit Member", true);
     this.id = id;
     this.role = role;
     setSize(350, 280);

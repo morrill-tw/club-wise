@@ -196,6 +196,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     buttonPanel.setOpaque(false);
 
     JButton editClub = new JButton("Edit Club");
+    editClub.setBackground(new Color(255, 200, 0));
 
     editClub.addActionListener(e -> {
       observer.openClubForm(club.getName());
