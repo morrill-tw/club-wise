@@ -271,13 +271,8 @@ public class ClubWiseApp implements App {
       e.printStackTrace();
       System.out.print("Error occurred while removing member: " + e.getMessage());
     }
-      ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
-  } catch (SQLException e) {
-    // Handle any SQL exceptions
-    e.printStackTrace();
-    System.out.print("Error occurred while removing member: " + e.getMessage());
   }
-}
+
 
   public void editMember(Member member, String clubName) {
     try {
