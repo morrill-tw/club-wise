@@ -493,7 +493,7 @@ SELECT *
 FROM purchase
 WHERE club_name = p_club_name;
 ELSE
-        -- If the club does not exist, return an error message
+
 SELECT CONCAT('Club with name "', p_club_name, '" does not exist.') AS ErrorMessage;
 END IF;
 END$$
@@ -589,3 +589,75 @@ SELECT CONCAT('Club "', p_club_name, '" does not exist.') AS ErrorMessage;
 END IF;
 END$$
 DELIMITER ;
+
+
+INSERT INTO club
+(club_name, club_description, active, category)
+VALUES
+    ("Live Music NEU", "Hosts live music events.", true, "Media and Communications");
+
+
+SELECT * FROM club;
+SELECT * FROM event;
+
+INSERT INTO event
+(event_title, event_description, event_date, club_name)
+VALUES
+    ("Live Concert", "Live music with a full band", "2025-10-15", "Live Music NEU"),
+    ("Boiler Room", "Rave music with special guest", "2025-11-05", "Live Music NEU"),
+    ("Cheese Tasting", "Taste different kinds of cheeses", "2025-9-05", "Cheese Club"),
+    ("Cheese making lessons", "Learn to make moldy cheese", "2025-8-05", "Cheese Club"),
+    ("Cooking Lesson", "Past special lesson with guests", "2025-4-13", "Cooking Club"),
+    ("Guest Celeebrity Chef", "Gordon Ramsay comes to teach the basics", "2025-10-22", "Cooking Club"),
+    ("Watch Party for NASCAR", "Join friends to watch live events together", "2026-05-05", "NER"),
+    ("Prototyping Workshop", "Leran the basics of prototyping", "2026-03-05", "NER");
+SELECT * from member_of_club;
+
+INSERT INTO member_of_club
+(member_id, first_name, last_name, join_date, club_name, role_name)
+VALUES
+    (7, "Gracie", "Abrams", "2024-09-11", "Live Music NEU", "President"),
+    (8, "Phoebe", "Bridgers", "2023-09-02", "Live Music NEU", "Treasurer"),
+    (9, "Grent", "Perez", "2024-09-02", "Live Music NEU", "Member"),
+    (10, "Noah", "Kahn", "2024-09-02", "Live Music NEU", "Vice President"),
+    (11, "Gordon", "Ramsay", "2024-11-02", "Cooking Club", "Vice President"),
+    (12, "Baking With", "Babish", "2024-08-02", "Cooking Club", "President"),
+    (13, "Ellen", "Degeneres", "2024-11-02", "Cooking Club", "Treasurer"),
+    (14, "Tyler", "Kim", "2024-11-02", "Cooking Club", "Member"),
+    (15, "Kiki", "Liu", "2025-11-02", "Cheese Club", "President"),
+    (16, "Eleanor", "Collins", "2023-07-04", "Cheese Club", "Vice President"),
+    (17, "Nick", "Chen", "2026-07-05", "Cheese Club", "Treasurer"),
+    (18, "Owen", "Zacherou", "2026-07-05", "Generate", "President"),
+    (19, "Birg", "Gloobal", "2026-07-05", "Generate", "Member"),
+    (20, "Vesely", "Ferdinand", "2026-07-05", "Generate", "Treasurer"),
+    (21, "Audrey", "Thorbal", "2026-07-05", "Generate", "Vice President");
+
+SELECT * FROM purchase;
+INSERT INTO purchase
+(purchase_id, purchase_title, cost, club_name)
+VALUES
+    (3, "Gas", 30.40, "NER"),
+    (4, "Pans", 26.40, "Cooking Club"),
+    (5, "Oil", 31.40, "Cooking Club"),
+    (18, "Pots", 31.50, "Cooking Club"),
+    (6, "Grease", 20.20, "Cooking Club"),
+    (7, "Salt", 3.14, "Cooking Club"),
+    (8, "Brie", 12.14, "Cheese Club"),
+    (9, "Briar", 15.14, "Cheese Club"),
+    (10, "Mozerella", 8.14, "Cheese Club"),
+    (11, "Server Costs", 4.14, "Generate"),
+    (12, "Pizza", 1.14, "Generate"),
+    (13, "Guest Speakers", 2.14, "Generate"),
+    (14, "Hardware", 3.30, "Generate"),
+    (15, "Guitars", 400.30, "Live Music NEU"),
+    (16, "Piano", 300.30, "Live Music NEU"),
+    (17, "Drums", 30.30, "Live Music NEU");
+
+SELECT * FROM social_media;
+INSERT INTO social_media
+(platform, username, club_name)
+VALUES
+    ("Twitter", "musictweets", "Live Music NEU"),
+    ("Instagram", "musicinsta", "Live Music NEU"),
+    ("Twitter", "cooktweets", "Cooking Club"),
+    ("Instagram", "cookinsta", "Cooking Club");
