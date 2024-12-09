@@ -487,10 +487,30 @@ VALUES
 -- create purchases
 
 -- create socials
+DELIMITER $$
+CREATE PROCEDURE create_social(
+IN p_platform VARCHAR(64),
+p_username VARCHAR(64),
+p_club_name VARCHAR(64)
+)
+BEGIN
+INSERT INTO social_media(platform, username, club_name)
+VALUES (p_platform, p_username, p_club_name);
+END $$
+DELIMITER ;
 
 -- delete purchases
 
 -- delete socials
+DELIMITER $$
+CREATE PROCEDURE delete_social(
+IN p_platform VARCHAR(64),
+p_username VARCHAR(64)
+)
+BEGIN
+DELETE FROM social_media WHERE platform = p_platform AND username = p_username;
+END $$
+DELIMITER ;
 
 -- update club procedure
 
