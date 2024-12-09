@@ -290,16 +290,8 @@ public class ClubWiseApp implements App {
       stmt.setDate(4, joinDate);
 
       // Execute the procedure
-      boolean hasResultSet = stmt.execute();
-
-      // Process the result (Message from the procedure)
-      if (hasResultSet) {
-        ResultSet rs = stmt.getResultSet();
-        while (rs.next()) {
-          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
-        }
-      }
-      ui.displayClubs(getClubs());
+      stmt.execute();
+      ui.displayMembers(clubName, getMembers(clubName));
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();
@@ -335,6 +327,7 @@ public class ClubWiseApp implements App {
       } else {
         System.out.println("Event updated successfully.");
       }
+      System.out.println(clubName);
       ui.displayEvents(clubName, this.getEvents(clubName));
     } catch (SQLException e) {
       e.printStackTrace(); // Print SQL exception details
