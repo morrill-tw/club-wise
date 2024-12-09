@@ -22,7 +22,7 @@ public class EditMemberForm extends JDialog {
   private JButton cancelButton;
   private String clubName;
 
-  public EditMemberForm(JFrame parent, App observer, int id, String role) {
+  public EditMemberForm(JFrame parent, App observer, int id, String role, String clubName) {
     super(parent, "Add Member", true);
     this.id = id;
     this.role = role;
@@ -31,6 +31,8 @@ public class EditMemberForm extends JDialog {
 
     this.observer = observer;
     setLayout(new FlowLayout());
+
+    this.clubName = clubName;
 
     firstNameField = new JTextField(23);
     lastNameField = new JTextField(23);
@@ -96,6 +98,7 @@ public class EditMemberForm extends JDialog {
     LocalDate localDate = LocalDate.of(year, monthIndex + 1, day);
     Date sqlDate = Date.valueOf(localDate); // Convert LocalDate to java.sql.Date
 
+    System.out.println("Creating new member with clubName: " + clubName);
     observer.editMember(new Member(id, firstName, lastName, sqlDate, role, this.clubName), this.clubName);
 
     dispose();
@@ -105,7 +108,4 @@ public class EditMemberForm extends JDialog {
     dispose();
   }
 
-  public void setClub(String clubName) {
-    this.clubName = clubName;
-  }
 }

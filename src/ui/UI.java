@@ -27,5 +27,5 @@ public interface UI {
 
   void refreshClubs(List<Club> clubs);
 
-  void displaySocials(List<SocialMedia> socials);
+  void displaySocials(String clubName, List<SocialMedia> socials);
 }

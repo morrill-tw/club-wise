@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
+import ui.SocialsDialog;
 import ui.UI;
 
 public class ClubWiseApp implements App {
@@ -335,6 +336,59 @@ public class ClubWiseApp implements App {
   }
 
   @Override
+  public void deleteSocial(SocialMedia social) {
+    String platform = social.getPlatform();
+    String username = social.getUsername();
+    try {
+      // SQL to call the stored procedure
+      String sql = "{CALL delete_social(?, ?)}";
+
+      // Prepare the callable statement
+      CallableStatement stmt = conn.prepareCall(sql);
+      stmt.setString(1, platform);  // Set the member ID
+      stmt.setString(2, username);
+
+      // Execute the procedure
+      boolean hasResultSet = stmt.execute();
+
+      // Process the result (Message from the procedure)
+      if (hasResultSet) {
+        ResultSet rs = stmt.getResultSet();
+        while (rs.next()) {
+          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+        }
+      }
+      ui.displaySocials(social.getClubName(), getSocials(social.getClubName()));
+    } catch (SQLException e) {
+      // Handle any SQL exceptions
+      e.printStackTrace();
+      System.out.print("Error occurred while removing social: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void addSocial(String clubName, SocialMedia social) {
+    // SQL to call the stored procedure
+    String sql = "{CALL create_social(?, ?, ?)}";
+    String platform = social.getPlatform();
+    String username = social.getUsername();
+
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, platform);
+      callableStatement.setString(2, username);
+      callableStatement.setString(3, clubName);
+
+      // Execute the stored procedure
+      callableStatement.executeQuery();
+      ui.displaySocials(clubName, getSocials(clubName));
+    } catch (SQLException e) {
+      System.err.println("SQL error: " + e.getMessage());
+    }
+  }
+
+  @Override
   public void addClub(Club club) {
     // SQL to call the stored procedure
     String sql = "{CALL create_club(?, ?, ?, ?)}";
@@ -380,7 +434,10 @@ public class ClubWiseApp implements App {
   }
 
   @Override
-  public void openSocialsDialog(String name) {
-    ui.displaySocials(getSocials(name));
+  public void openSocialsDialog(SocialsDialog prev, String name) {
+    if (prev != null) {
+      prev.dispose();
+    }
+    ui.displaySocials(name, getSocials(name));
   }
 }

@@ -20,8 +20,10 @@ public class AddEventForm extends JDialog {
   private JButton cancelButton;
   private String clubName;
 
-  public AddEventForm(JFrame parent, App observer) {
+  public AddEventForm(JFrame parent, App observer, String clubName) {
     super(parent, "Add Event", true);
+
+    System.out.println("Form created with clubName: " + clubName);
 
     setSize(350, 280);
 
@@ -30,6 +32,8 @@ public class AddEventForm extends JDialog {
 
     // Subscribe observer
     this.observer = observer;
+
+    this.clubName = clubName;
 
     // Set the layout and initialize components
     setLayout(new FlowLayout());
@@ -123,8 +127,4 @@ public class AddEventForm extends JDialog {
     dispose();
   }
 
-  public void setClub(String clubName) {
-    this.clubName = clubName;
-    System.out.print(clubName);
-  }
 }

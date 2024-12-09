@@ -2,6 +2,8 @@ package app;
 
 import java.util.List;
 
+import ui.SocialsDialog;
+
 public interface App {
 
   void run();
@@ -24,10 +26,13 @@ public interface App {
 
   void addClub(Club club);
 
-  void openSocialsDialog(String name);
+  void openSocialsDialog(SocialsDialog prev, String name);
 
   void editMember(Member member, String clubName);
 
   void editEvent(Event event);
-  
+
+  void deleteSocial(SocialMedia social);
+
+  void addSocial(String clubName, SocialMedia socialMedia);
 }

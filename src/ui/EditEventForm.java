@@ -117,8 +117,4 @@ public class EditEventForm extends JDialog {
     dispose();
   }
 
-  public void setClub(String clubName) {
-    this.clubName = clubName;
-    System.out.print(clubName);
-  }
 }

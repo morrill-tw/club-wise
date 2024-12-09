@@ -96,41 +96,6 @@ public class ClubWiseGUI extends JFrame implements UI {
       }
     });
 
-    // Add a text field and submit button for category filter
-    JLabel categoryLabel = new JLabel("Category:");
-    categoryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-    categoryLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    categoryLabel.setOpaque(true);
-    categoryLabel.setBackground(new Color(200, 200, 215)); // Match the filter panel background
-    filterPanel.add(categoryLabel);
-
-    JPanel categoryPanel = new JPanel();
-    categoryPanel.setLayout(new FlowLayout(FlowLayout.LEFT)); // Align components to the left
-    categoryPanel.setMaximumSize(new Dimension(200, 30)); // Constrain the size of the panel
-    categoryPanel.setBackground(new Color(200, 200, 215)); // Match the filter panel background
-
-    JTextField categoryTextField = new JTextField();
-    categoryTextField.setPreferredSize(new Dimension(120, 25)); // Set a fixed size for the text field
-    categoryTextField.setBackground(new Color(255, 255, 255)); // White background for text box
-    categoryTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-
-    JButton categorySubmitButton = new JButton("Submit");
-    categorySubmitButton.setFont(new Font("Arial", Font.PLAIN, 12));
-    categorySubmitButton.setPreferredSize(new Dimension(70, 25)); // Match the height of the text box
-
-    categorySubmitButton.addActionListener(e -> {
-      String category = categoryTextField.getText().trim();
-      if (!category.isEmpty()) {
-        observer.filterClubs(new CategoryFilter(category));
-      } else {
-        observer.filterClubs(new EmptyFilter());
-      }
-    });
-
-    categoryPanel.add(categoryTextField);
-    categoryPanel.add(categorySubmitButton);
-    filterPanel.add(categoryPanel);
-
     JScrollPane scrollPane = createClubsPanel(clubs);
 
     // Combine filter panel and scroll pane into a JSplitPane
@@ -233,7 +198,7 @@ public class ClubWiseGUI extends JFrame implements UI {
     JButton socialsButton = new JButton("View Socials");
 
     socialsButton.addActionListener(e -> {
-      observer.openSocialsDialog(club.getName());
+      observer.openSocialsDialog(null, club.getName());
     });
     buttonPanel.add(socialsButton);
 
@@ -255,8 +220,8 @@ public class ClubWiseGUI extends JFrame implements UI {
     return clubPanel;
   }
 
-  public void displaySocials (List<SocialMedia> socials) {
-    SocialsDialog socialsDialog = new SocialsDialog(this, observer, socials);
+  public void displaySocials (String clubName, List<SocialMedia> socials) {
+    SocialsDialog socialsDialog = new SocialsDialog(this, observer, socials, clubName);
     socialsDialog.setVisible(true);
   }
 
@@ -437,9 +402,8 @@ public class ClubWiseGUI extends JFrame implements UI {
 
 
     editButton.addActionListener(e -> {
-      EditMemberForm memberForm = new EditMemberForm(this, observer, member.getId(), member.getRoleName());
+      EditMemberForm memberForm = new EditMemberForm(this, observer, member.getId(), member.getRoleName(), member.getClubName());
       memberForm.setVisible(true);
-      memberForm.setClub(member.getClubName());
     });
     infoPanel.add(editButton);
 
@@ -527,11 +491,8 @@ public class ClubWiseGUI extends JFrame implements UI {
     editButton.addActionListener(e -> {
       EditEventForm editForm = new EditEventForm(this, observer, event.getClubName(), event.getEventDate(), event.getEventTitle());
       editForm.setVisible(true);
-      editForm.setClub(clubName);
     });
     infoPanel.add(editButton);
-
-
 
     eventCard.add(infoPanel, BorderLayout.CENTER);
     return eventCard;
@@ -566,8 +527,7 @@ public class ClubWiseGUI extends JFrame implements UI {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
     ));
     addEventButton.addActionListener(e -> {
-      AddEventForm addEventForm = new AddEventForm(this, observer);
-      addEventForm.setClub(clubName);
+      AddEventForm addEventForm = new AddEventForm(this, observer, clubName);
       addEventForm.setVisible(true);
     });
 
