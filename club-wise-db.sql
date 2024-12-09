@@ -451,3 +451,14 @@ END IF;
 END$$
 DELIMITER ;
 
+-- get socials with a given club name
+
+-- get purchases given a club name
+
+-- create purchases
+
+-- create socials
+
+-- delete purchases
+
+-- delete socials
