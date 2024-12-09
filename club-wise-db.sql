@@ -452,8 +452,35 @@ END$$
 DELIMITER ;
 
 -- get socials with a given club name
+DELIMITER $$
+
+CREATE PROCEDURE get_socials_by_club(
+    IN p_club_name VARCHAR(64)
+)
+BEGIN
+    -- Check if the club exists
+    IF EXISTS (SELECT 1 FROM club WHERE club_name = p_club_name) THEN
+        -- Retrieve social media details for the specified club
+SELECT platform, username
+FROM social_media
+WHERE club_name = p_club_name;
+ELSE
+        -- If the club does not exist, return an error message
+SELECT CONCAT('Club with name "', p_club_name, '" does not exist.') AS ErrorMessage;
+END IF;
+END$$
+DELIMITER ;
+INSERT INTO social_media (platform, username, club_name)
+VALUES
+    ('Twitter', 'CodingClub123', 'Generate'),
+    ('Instagram', 'coding.fun', 'Generate'),
+    ('Facebook', 'CodingClubFB', 'Generate'),
+    ('Twitter', 'EcoWarriors01', 'Cheese Club'),
+    ('LinkedIn', 'Eco-Warriors', 'Cheese Club');
+
 
 -- get purchases given a club name
+    
 
 -- create purchases
 
