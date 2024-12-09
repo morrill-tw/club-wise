@@ -14,7 +14,7 @@ public class PurchasesDialog extends JDialog {
   private JButton exitButton;
   private List<Purchase> purchases;
   private String clubName;
-  private static PurchasesDialog currentDialog = null; // Track the current dialog
+  private static PurchasesDialog currentDialog = null;
 
   public PurchasesDialog(JFrame parent, App observer, List<Purchase> purchases, String clubName) {
     super(parent, "Purchases", true);
@@ -39,7 +39,6 @@ public class PurchasesDialog extends JDialog {
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     add(scrollPane, BorderLayout.CENTER);
 
-    // Create a panel for the "Add" button
     JPanel addPanel = new JPanel();
     addPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     JButton addPurchaseButton = new JButton("+");
@@ -51,7 +50,6 @@ public class PurchasesDialog extends JDialog {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
     ));
     addPurchaseButton.addActionListener(e -> {
-      // If a dialog is already open, close it before opening a new one
       if (currentDialog != null) {
         currentDialog.dispose();
       }
@@ -61,11 +59,9 @@ public class PurchasesDialog extends JDialog {
     addPanel.add(addPurchaseButton);
     add(addPanel, BorderLayout.NORTH);
 
-    // Create a panel to center the exit button
     JPanel exitPanel = new JPanel();
     exitPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-    // Add exit button to the panel
     exitButton = new JButton("Exit");
     exitButton.setPreferredSize(new Dimension(100, 30));
     exitButton.setMargin(new Insets(5, 10, 5, 10));
@@ -75,12 +71,10 @@ public class PurchasesDialog extends JDialog {
 
     exitPanel.add(exitButton);
 
-    // Add the exit panel to the bottom (SOUTH) of the dialog
     add(exitPanel, BorderLayout.SOUTH);
 
     setLocationRelativeTo(parent);
 
-    // Save the reference of the current dialog instance
     currentDialog = this;
   }
 
@@ -111,9 +105,9 @@ public class PurchasesDialog extends JDialog {
 
       if (confirm == JOptionPane.YES_OPTION) {
         observer.deletePurchase(purchase);
-        dispose(); // Close the current dialog
+        dispose();
         SwingUtilities.invokeLater(() -> {
-          observer.openPurchasesDialog(this, purchase.getClubName()); // Reopen the updated dialog
+          observer.openPurchasesDialog(this, purchase.getClubName());
         });
       }
     });
@@ -122,12 +116,12 @@ public class PurchasesDialog extends JDialog {
     return purchaseCard;
   }
 
-  // A method to update the current dialog with new data if needed
+
   public static void openPurchasesDialog(JFrame parent, App observer, List<Purchase> purchases, String clubName) {
     if (currentDialog != null) {
-      currentDialog.dispose(); // Close the existing dialog
+      currentDialog.dispose();
     }
     currentDialog = new PurchasesDialog(parent, observer, purchases, clubName);
-    currentDialog.setVisible(true); // Open the new dialog
+    currentDialog.setVisible(true);
   }
 }

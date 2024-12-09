@@ -1,7 +1,5 @@
 package app;
 
-import java.sql.Date;
-
 public class Purchase {
   private int purchaseId;
   private String title;

@@ -25,13 +25,10 @@ public class AddClubForm extends JDialog {
 
     setSize(350, 280);
 
-    // Prevent resizing
     setResizable(false);
 
-    // Subscribe observer
     this.observer = observer;
 
-    // Set the layout and initialize components
     setLayout(new FlowLayout());
 
     clubName = new JTextField(23);
@@ -48,7 +45,6 @@ public class AddClubForm extends JDialog {
     submitButton = new JButton("Submit");
     cancelButton = new JButton("Cancel");
 
-    // Add components to the form
     add(new JLabel("Club Name:"));
     add(clubName);
     add(new JLabel("Club Description:"));
@@ -64,11 +60,10 @@ public class AddClubForm extends JDialog {
     cancelButton.addActionListener(e -> cancelForm());
 
     setSize(350, 250);
-    setLocationRelativeTo(parent); // Centers the form relative to the parent window
+    setLocationRelativeTo(parent);
   }
 
   private void submitForm() {
-    // Extract the information from the form
     String name = clubName.getText();
     String description = clubDescription.getText();
     Boolean status;
@@ -79,15 +74,12 @@ public class AddClubForm extends JDialog {
     }
     String category = (String) categoryComboBox.getSelectedItem();
 
-    // Process the data, like adding the event to a list or database
     observer.addClub(new Club(name, description, status, category));
 
-    // Close the dialog after submission
     dispose();
   }
 
   private void cancelForm() {
-    // Close the dialog without doing anything
     dispose();
   }
 

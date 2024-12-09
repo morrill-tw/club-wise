@@ -46,17 +46,13 @@ public class ClubWiseApp implements App {
 
   private List<Event> getEvents(String clubName) {
     List<Event> eventsList = new ArrayList<>();
-    // Call the stored procedure
     String sql = "{ CALL get_events_by_club(?) }";
     try {
       CallableStatement callableStatement = conn.prepareCall(sql);
-      // Set input parameter
       callableStatement.setString(1, clubName);
 
-      // Execute the stored procedure
       try (ResultSet resultSet = callableStatement.executeQuery()) {
 
-        // Process the result set
         while (resultSet.next()) {
           String eventTitle = resultSet.getString("event_title");
           String eventDescription = resultSet.getString("event_description");
@@ -86,17 +82,14 @@ public class ClubWiseApp implements App {
     String sql = "{ CALL add_member_to_club(?, ?, ?, ?, ?) }";
     try {
       CallableStatement callableStatement = conn.prepareCall(sql);
-      // Set input parameters
       callableStatement.setString(1, firstName);
       callableStatement.setString(2, lastName);
       callableStatement.setDate(3, joinDate);
       callableStatement.setString(4, clubName);
       callableStatement.setString(5, roleName);
 
-      // Execute the stored procedure
       boolean hasResultSet = callableStatement.execute();
 
-      // Handle any results
       if (hasResultSet) {
         try (ResultSet resultSet = callableStatement.getResultSet()) {
           while (resultSet.next()) {
@@ -114,24 +107,19 @@ public class ClubWiseApp implements App {
 
   @Override
   public void addEvent(Event event) {
-    // SQL to call the stored procedure
     String sql = "{CALL add_event_to_club(?, ?, ?, ?)}";
     String eventTitle = event.getEventTitle();
     String eventDescription = event.getEventDescription();
     Date eventDate = event.getEventDate();
     String clubName = event.getClubName();
 
-    // Create a CallableStatement to call the stored procedure
     try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
       callableStatement.setString(1, eventTitle);
       callableStatement.setString(2, eventDescription);
       callableStatement.setDate(3, eventDate);
       callableStatement.setString(4, clubName);
 
-      // Execute the stored procedure
       try (ResultSet resultSet = callableStatement.executeQuery()) {
-        // Process the result (the result message from the procedure)
         if (resultSet.next()) {
           String resultMessage = resultSet.getString("ResultMessage");
           System.out.println("Procedure Result: " + resultMessage);
@@ -228,20 +216,16 @@ public class ClubWiseApp implements App {
 
   public void deleteEvent(Event event) {
     try {
-      // SQL to call the stored procedure
       String sql = "{CALL delete_events_from_club(?, ?, ?)}";
 
-      // Prepare the callable statement
       CallableStatement stmt = conn.prepareCall(sql);
       stmt.setString(1, event.getClubName());   // Set the club name
       stmt.setString(2, event.getEventTitle()); // Set the event title
       stmt.setDate(3, event.getEventDate());    // Set the event date
 
-      // Execute the procedure
       boolean hasResultSet = stmt.execute();
       ui.displayEvents(event.getClubName(), getEvents(event.getClubName()));
     } catch (SQLException e) {
-      // Handle any SQL exceptions
       e.printStackTrace();
       System.out.print("Error occurred while deleting events: " + e.getMessage());
     }
@@ -250,26 +234,20 @@ public class ClubWiseApp implements App {
   public void deleteMember(Member member) {
     int memberId = member.getId();
     try {
-      // SQL to call the stored procedure
       String sql = "{CALL remove_member_from_club(?)}";
 
-      // Prepare the callable statement
       CallableStatement stmt = conn.prepareCall(sql);
-      stmt.setInt(1, memberId);  // Set the member ID
+      stmt.setInt(1, memberId);
 
-      // Execute the procedure
       boolean hasResultSet = stmt.execute();
-
-      // Process the result (Message from the procedure)
       if (hasResultSet) {
         ResultSet rs = stmt.getResultSet();
         while (rs.next()) {
-          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+          String resultMessage = rs.getString(1);
         }
       }
       ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
     } catch (SQLException e) {
-      // Handle any SQL exceptions
       e.printStackTrace();
       System.out.print("Error occurred while removing member: " + e.getMessage());
     }
@@ -278,7 +256,6 @@ public class ClubWiseApp implements App {
 
   public void editMember(Member member, String clubName) {
     try {
-      // SQL to call the stored procedure
       String sql = "{CALL edit_member_info(?, ?, ?, ?)}";
       int memberId = member.getId();
       String firstName = member.getFirstName();
@@ -291,11 +268,9 @@ public class ClubWiseApp implements App {
       stmt.setString(3, lastName);
       stmt.setDate(4, joinDate);
 
-      // Execute the procedure
       stmt.execute();
       ui.displayMembers(clubName, getMembers(clubName));
     } catch (SQLException e) {
-      // Handle any SQL exceptions
       e.printStackTrace();
       System.out.println("Error occurred while editing member: " + e.getMessage());
     }
@@ -307,24 +282,20 @@ public class ClubWiseApp implements App {
       Date eventDate = event.getEventDate();
       String clubName = event.getClubName();
       String newEventDescription = event.getEventDescription();
-      // Prepare the stored procedure call
       String sql = "{CALL edit_event(?, ?, ?, ?)}";
       CallableStatement callableStatement = conn.prepareCall(sql);
 
-      // Set input parameters
       callableStatement.setString(1, eventTitle);
       callableStatement.setDate(2, eventDate);
       callableStatement.setString(3, clubName);
       callableStatement.setString(4, newEventDescription);
 
-      // Execute the stored procedure
       boolean hasResultSet = callableStatement.execute();
 
-      // Handle the result
       if (hasResultSet) {
         ResultSet resultSet = callableStatement.getResultSet();
         while (resultSet.next()) {
-          System.out.println(resultSet.getString(1)); // Print success or error message
+          System.out.println(resultSet.getString(1));
         }
       } else {
         System.out.println("Event updated successfully.");
@@ -332,7 +303,7 @@ public class ClubWiseApp implements App {
       System.out.println(clubName);
       ui.displayEvents(clubName, this.getEvents(clubName));
     } catch (SQLException e) {
-      e.printStackTrace(); // Print SQL exception details
+      e.printStackTrace();
     }
   }
 
@@ -341,27 +312,22 @@ public class ClubWiseApp implements App {
     String platform = social.getPlatform();
     String username = social.getUsername();
     try {
-      // SQL to call the stored procedure
       String sql = "{CALL delete_social(?, ?)}";
 
-      // Prepare the callable statement
       CallableStatement stmt = conn.prepareCall(sql);
-      stmt.setString(1, platform);  // Set the member ID
+      stmt.setString(1, platform);
       stmt.setString(2, username);
 
-      // Execute the procedure
       boolean hasResultSet = stmt.execute();
 
-      // Process the result (Message from the procedure)
       if (hasResultSet) {
         ResultSet rs = stmt.getResultSet();
         while (rs.next()) {
-          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+          String resultMessage = rs.getString(1);
         }
       }
       ui.displaySocials(social.getClubName(), getSocials(social.getClubName()));
     } catch (SQLException e) {
-      // Handle any SQL exceptions
       e.printStackTrace();
       System.out.print("Error occurred while removing social: " + e.getMessage());
     }
@@ -369,19 +335,15 @@ public class ClubWiseApp implements App {
 
   @Override
   public void addSocial(String clubName, SocialMedia social) {
-    // SQL to call the stored procedure
     String sql = "{CALL create_social(?, ?, ?)}";
     String platform = social.getPlatform();
     String username = social.getUsername();
 
-    // Create a CallableStatement to call the stored procedure
     try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
       callableStatement.setString(1, platform);
       callableStatement.setString(2, username);
       callableStatement.setString(3, clubName);
 
-      // Execute the stored procedure
       callableStatement.executeQuery();
       ui.displaySocials(clubName, getSocials(clubName));
     } catch (SQLException e) {
@@ -391,22 +353,18 @@ public class ClubWiseApp implements App {
 
   @Override
   public void addClub(Club club) {
-    // SQL to call the stored procedure
     String sql = "{CALL create_club(?, ?, ?, ?)}";
     String clubName = club.getName();
     String clubDescription = club.getDescription();
     Boolean clubStatus = club.getActiveStatus();
     String clubCategory = club.getCategory();
 
-    // Create a CallableStatement to call the stored procedure
     try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
       callableStatement.setString(1, clubName);
       callableStatement.setString(2, clubDescription);
       callableStatement.setBoolean(3, clubStatus);
       callableStatement.setString(4, clubCategory);
 
-      // Execute the stored procedure
       callableStatement.executeQuery();
       ui.refreshClubs(getClubs());
     } catch (SQLException e) {
@@ -449,7 +407,6 @@ public class ClubWiseApp implements App {
 
   @Override
   public void editClub(Club club) {
-    // SQL to call the stored procedure
     String sql = "{CALL update_club(?, ?, ?, ?)}";
     String clubName = club.getName();
     String clubDescription = club.getDescription();
@@ -457,15 +414,12 @@ public class ClubWiseApp implements App {
     String clubCategory = club.getCategory();
     System.out.print(" /" + clubName + clubDescription + clubStatus + clubCategory);
 
-    // Create a CallableStatement to call the stored procedure
     try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
       callableStatement.setString(1, clubName);
       callableStatement.setString(2, clubDescription);
       callableStatement.setBoolean(3, clubStatus);
       callableStatement.setString(4, clubCategory);
 
-      // Execute the stored procedure
       callableStatement.executeQuery();
       ui.refreshClubs(getClubs());
     } catch (SQLException e) {
@@ -477,26 +431,21 @@ public class ClubWiseApp implements App {
   public void deletePurchase(Purchase purchase) {
     int id = purchase.getPurchaseId();
     try {
-      // SQL to call the stored procedure
       String sql = "{CALL delete_purchase(?)}";
 
-      // Prepare the callable statement
       CallableStatement stmt = conn.prepareCall(sql);
-      stmt.setInt(1, id);  // Set the member ID
+      stmt.setInt(1, id);
 
-      // Execute the procedure
       boolean hasResultSet = stmt.execute();
 
-      // Process the result (Message from the procedure)
       if (hasResultSet) {
         ResultSet rs = stmt.getResultSet();
         while (rs.next()) {
-          String resultMessage = rs.getString(1);  // Get the message returned by the procedure
+          String resultMessage = rs.getString(1);
         }
       }
       ui.displayPurchases(purchase.getClubName(), getPurchases(purchase.getClubName()));
     } catch (SQLException e) {
-      // Handle any SQL exceptions
       e.printStackTrace();
       System.out.print("Error occurred while removing purchase: " + e.getMessage());
     }
@@ -516,14 +465,11 @@ public class ClubWiseApp implements App {
     String title = purchase.getTitle();
     Double cost = purchase.getCost();
 
-    // Create a CallableStatement to call the stored procedure
     try (CallableStatement callableStatement = conn.prepareCall(sql)) {
-      // Set input parameters for the procedure
       callableStatement.setString(1, title);
       callableStatement.setDouble(2, cost);
       callableStatement.setString(3, clubName);
 
-      // Execute the stored procedure
       callableStatement.executeQuery();
       ui.displayPurchases(clubName, getPurchases(clubName));
     } catch (SQLException e) {

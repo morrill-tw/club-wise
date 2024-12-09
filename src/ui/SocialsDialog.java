@@ -12,7 +12,7 @@ public class SocialsDialog extends JDialog {
   private JButton exitButton;
   private List<SocialMedia> socials;
   private String clubName;
-  private static SocialsDialog currentDialog = null; // Track the current dialog
+  private static SocialsDialog currentDialog = null;
 
   public SocialsDialog(JFrame parent, App observer, List<SocialMedia> socials, String clubName) {
     super(parent, "Socials", true);
@@ -24,24 +24,19 @@ public class SocialsDialog extends JDialog {
     this.socials = socials;
     this.observer = observer;
 
-    // Use BorderLayout on the dialog's content pane
     setLayout(new BorderLayout());
 
-    // Create a panel for social media labels
     JPanel socialsPanel = new JPanel();
     socialsPanel.setLayout(new BoxLayout(socialsPanel, BoxLayout.Y_AXIS));
 
-    // Add the social media labels
     for (SocialMedia social : socials) {
       socialsPanel.add(createSocialCard(social));
     }
 
-    // Wrap the socials panel inside a JScrollPane for scrolling
     JScrollPane scrollPane = new JScrollPane(socialsPanel);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     add(scrollPane, BorderLayout.CENTER);
 
-    // Create a panel for the "Add" button
     JPanel addPanel = new JPanel();
     addPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
     JButton addSocialButton = new JButton("+");
@@ -53,7 +48,6 @@ public class SocialsDialog extends JDialog {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)
     ));
     addSocialButton.addActionListener(e -> {
-      // If a dialog is already open, close it before opening a new one
       if (currentDialog != null) {
         currentDialog.dispose();
       }
@@ -63,11 +57,9 @@ public class SocialsDialog extends JDialog {
     addPanel.add(addSocialButton);
     add(addPanel, BorderLayout.NORTH);
 
-    // Create a panel to center the exit button
     JPanel exitPanel = new JPanel();
     exitPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 
-    // Add exit button to the panel
     exitButton = new JButton("Exit");
     exitButton.setPreferredSize(new Dimension(100, 30));
     exitButton.setMargin(new Insets(5, 10, 5, 10));
@@ -77,12 +69,10 @@ public class SocialsDialog extends JDialog {
 
     exitPanel.add(exitButton);
 
-    // Add the exit panel to the bottom (SOUTH) of the dialog
     add(exitPanel, BorderLayout.SOUTH);
 
     setLocationRelativeTo(parent);
 
-    // Save the reference of the current dialog instance
     currentDialog = this;
   }
 
@@ -113,9 +103,9 @@ public class SocialsDialog extends JDialog {
 
       if (confirm == JOptionPane.YES_OPTION) {
         observer.deleteSocial(social);
-        dispose(); // Close the current dialog
+        dispose();
         SwingUtilities.invokeLater(() -> {
-          observer.openSocialsDialog(this, social.getClubName()); // Reopen the updated dialog
+          observer.openSocialsDialog(this, social.getClubName());
         });
       }
     });
@@ -124,12 +114,11 @@ public class SocialsDialog extends JDialog {
     return socialCard;
   }
 
-  // A method to update the current dialog with new data if needed
   public static void openSocialsDialog(JFrame parent, App observer, List<SocialMedia> socials, String clubName) {
     if (currentDialog != null) {
-      currentDialog.dispose(); // Close the existing dialog
+      currentDialog.dispose();
     }
     currentDialog = new SocialsDialog(parent, observer, socials, clubName);
-    currentDialog.setVisible(true); // Open the new dialog
+    currentDialog.setVisible(true);
   }
 }

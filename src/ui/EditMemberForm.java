@@ -79,7 +79,7 @@ public class EditMemberForm extends JDialog {
     int monthIndex = monthComboBox.getSelectedIndex();
     int year = (int) yearComboBox.getSelectedItem();
 
-    Month month = Month.of(monthIndex + 1); // Month is 1-based
+    Month month = Month.of(monthIndex + 1);
     int daysInMonth = month.length(LocalDate.of(year, 1, 1).isLeapYear());
 
     dayComboBox.removeAllItems();
@@ -96,7 +96,7 @@ public class EditMemberForm extends JDialog {
     int year = (int) yearComboBox.getSelectedItem();
 
     LocalDate localDate = LocalDate.of(year, monthIndex + 1, day);
-    Date sqlDate = Date.valueOf(localDate); // Convert LocalDate to java.sql.Date
+    Date sqlDate = Date.valueOf(localDate);
 
     System.out.println("Creating new member with clubName: " + clubName);
     observer.editMember(new Member(id, firstName, lastName, sqlDate, role, this.clubName), this.clubName);

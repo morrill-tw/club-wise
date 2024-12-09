@@ -59,11 +59,11 @@ public class EditClubForm extends JDialog {
     cancelButton.addActionListener(e -> cancelForm());
 
     setSize(350, 250);
-    setLocationRelativeTo(parent); // Centers the form relative to the parent window
+    setLocationRelativeTo(parent);
   }
 
   private void submitForm() {
-    // Extract the information from the form
+
     String description = clubDescription.getText();
     Boolean status;
     if (activeStatusComboBox.getSelectedIndex() == 0) {
@@ -73,7 +73,6 @@ public class EditClubForm extends JDialog {
     }
     String category = (String) categoryComboBox.getSelectedItem();
 
-    // Process the data, like adding the event to a list or database
     observer.editClub(new Club(this.name, description, status, category));
 
     dispose();

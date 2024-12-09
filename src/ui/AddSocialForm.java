@@ -24,15 +24,12 @@ public class AddSocialForm extends JDialog {
 
     setSize(350, 280);
 
-    // Prevent resizing
     setResizable(false);
 
-    // Subscribe observer
     this.observer = observer;
 
     this.clubName = clubName;
 
-    // Set the layout and initialize components
     setLayout(new FlowLayout());
 
     platform = new JTextField(25);
@@ -40,7 +37,6 @@ public class AddSocialForm extends JDialog {
     submitButton = new JButton("Submit");
     cancelButton = new JButton("Cancel");
 
-    // Add components to the form
     add(new JLabel("Platform:"));
     add(platform);
     add(new JLabel("Username:"));
@@ -52,23 +48,19 @@ public class AddSocialForm extends JDialog {
     cancelButton.addActionListener(e -> cancelForm());
 
     setSize(350, 250);
-    setLocationRelativeTo(parent); // Centers the form relative to the parent window
+    setLocationRelativeTo(parent);
   }
 
   private void submitForm() {
-    // Extract the information from the form
     String platformText = platform.getText();
     String usernameText = username.getText();
 
-    // Process the data, like adding the event to a list or database
     observer.addSocial(clubName, new SocialMedia(platformText, usernameText, clubName));
 
-    // Close the dialog after submission
     dispose();
   }
 
   private void cancelForm() {
-    // Close the dialog without doing anything
     dispose();
   }
 }
