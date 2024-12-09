@@ -6,7 +6,7 @@ public class Club {
   private Boolean active;
   private String category;
 
-  Club(String name, String description, Boolean active, String category) {
+  public Club(String name, String description, Boolean active, String category) {
     this.name = name;
     this.description = description;
     this.active = active;

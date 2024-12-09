@@ -237,7 +237,7 @@ public class ClubWiseApp implements App {
 
       // Execute the procedure
       boolean hasResultSet = stmt.execute();
-      ui.displayClubs(this.getClubs());
+      ui.displayEvents(event.getClubName(), getEvents(event.getClubName()));
     } catch (SQLException e) {
       // Handle any SQL exceptions
       e.printStackTrace();
@@ -265,11 +265,61 @@ public class ClubWiseApp implements App {
         String resultMessage = rs.getString(1);  // Get the message returned by the procedure
       }
     }
-      ui.displayClubs(this.getClubs());
+      ui.displayMembers(member.getClubName(), getMembers(member.getClubName()));
   } catch (SQLException e) {
     // Handle any SQL exceptions
     e.printStackTrace();
     System.out.print("Error occurred while removing member: " + e.getMessage());
   }
+  }
+
+  @Override
+  public void addClub(Club club) {
+    // SQL to call the stored procedure
+    String sql = "{CALL create_club(?, ?, ?, ?)}";
+    String clubName = club.getName();
+    String clubDescription = club.getDescription();
+    Boolean clubStatus = club.getActiveStatus();
+    String clubCategory = club.getCategory();
+
+    // Create a CallableStatement to call the stored procedure
+    try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+      // Set input parameters for the procedure
+      callableStatement.setString(1, clubName);
+      callableStatement.setString(2, clubDescription);
+      callableStatement.setBoolean(3, clubStatus);
+      callableStatement.setString(4, clubCategory);
+
+      // Execute the stored procedure
+      callableStatement.executeQuery();
+      ui.refreshClubs(getClubs());
+    } catch (SQLException e) {
+      System.err.println("SQL error: " + e.getMessage());
+    }
+  }
+
+  public List<SocialMedia> getSocials(String clubName) {
+    ResultSet rs;
+    List<SocialMedia> socials = new ArrayList<SocialMedia>();
+    try {
+      PreparedStatement ps =
+              conn.prepareStatement("CALL get_socials_by_club( " + "\"" + clubName +"\"" + " )");
+      rs = ps.executeQuery();
+      while (rs.next()) {
+        String platform = rs.getString("platform");
+        String username = rs.getString("username");
+
+        SocialMedia social = new SocialMedia(platform, username, clubName);
+        socials.add(social);
+      }
+    } catch (SQLException e) {
+      System.out.println("Error fetching socials.");
+    }
+    return socials;
+  }
+
+  @Override
+  public void openSocialsDialog(String name) {
+    ui.displaySocials(getSocials(name));
   }
 }

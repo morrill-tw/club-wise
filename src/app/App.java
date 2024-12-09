@@ -21,4 +21,8 @@ public interface App {
   void deleteEvent(Event event);
 
   void deleteMember(Member member);
+
+  void addClub(Club club);
+
+  void openSocialsDialog(String name);
 }
